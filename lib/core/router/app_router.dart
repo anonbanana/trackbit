@@ -5,7 +5,14 @@ import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/roles/presentation/pages/role_list_page.dart';
 import '../../features/roles/presentation/pages/role_form_page.dart';
 import '../../features/inventory/presentation/pages/inventory_page.dart';
-import '../../features/pos/presentation/pages/pos_page.dart';
+import '../../features/inventory/presentation/pages/category_list_page.dart';
+import '../../features/inventory/presentation/pages/category_form_page.dart';
+import '../../features/inventory/presentation/pages/product_list_page.dart';
+import '../../features/inventory/presentation/pages/product_form_page.dart';
+import '../../features/inventory/presentation/pages/stock_movement_page.dart';
+import '../../features/inventory/presentation/pages/low_stock_page.dart';
+import '../../features/pos/presentation/pages/pos_main_page.dart';
+import '../../features/pos/presentation/pages/checkout_page.dart';
 import '../../features/sales/presentation/pages/sales_page.dart';
 import '../../features/invoicing/presentation/pages/invoicing_page.dart';
 import '../../features/expenses/presentation/pages/expenses_page.dart';
@@ -55,11 +62,77 @@ final appRouter = GoRouter(
       path: '/inventory',
       name: 'inventory',
       builder: (context, state) => const InventoryPage(),
+      routes: [
+        GoRoute(
+          path: 'categories',
+          name: 'category-list',
+          builder: (context, state) => const CategoryListPage(),
+          routes: [
+            GoRoute(
+              path: 'add',
+              name: 'category-add',
+              builder: (context, state) => const CategoryFormPage(),
+            ),
+            GoRoute(
+              path: ':id/edit',
+              name: 'category-edit',
+              builder: (context, state) => CategoryFormPage(
+                categoryId: state.pathParameters['id'],
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'products',
+          name: 'product-list',
+          builder: (context, state) => const ProductListPage(),
+          routes: [
+            GoRoute(
+              path: 'add',
+              name: 'product-add',
+              builder: (context, state) => const ProductFormPage(),
+            ),
+            GoRoute(
+              path: ':id/edit',
+              name: 'product-edit',
+              builder: (context, state) => ProductFormPage(
+                productId: state.pathParameters['id'],
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'stock',
+          name: 'stock-movements',
+          builder: (context, state) => const StockMovementPage(),
+          routes: [
+            GoRoute(
+              path: 'add',
+              name: 'stock-movement-add',
+              builder: (context, state) => StockMovementPage(
+                productId: state.extra as String?,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'alerts',
+          name: 'low-stock',
+          builder: (context, state) => const LowStockPage(),
+        ),
+      ],
     ),
     GoRoute(
       path: '/pos',
       name: 'pos',
-      builder: (context, state) => const PosPage(),
+      builder: (context, state) => const PosMainPage(),
+      routes: [
+        GoRoute(
+          path: 'checkout',
+          name: 'pos-checkout',
+          builder: (context, state) => const CheckoutPage(),
+        ),
+      ],
     ),
     GoRoute(
       path: '/sales',
