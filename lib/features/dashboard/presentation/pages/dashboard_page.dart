@@ -113,7 +113,7 @@ class DashboardPage extends ConsumerWidget {
                     icon: Icons.settings,
                     label: 'Settings',
                     color: AppColors.textSecondary,
-                    onTap: () {},
+                    onTap: () => context.go('/settings'),
                   ),
                 ],
               ),

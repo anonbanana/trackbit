@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/inventory_providers.dart';
 import '../../domain/entities/product.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/product_attribute.dart';
 import '../../domain/entities/category_attribute.dart';
 
@@ -31,6 +34,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   String _unit = 'Piece';
   bool _isActive = true;
   bool _isLoading = false;
+  String? _imagePath;
 
   final _attributeControllers = <String, TextEditingController>{};
   final _attributeSelectValues = <String, String>{};
@@ -73,6 +77,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
           _selectedCategoryId = product.categoryId;
           _unit = product.unit;
           _isActive = product.isActive;
+          _imagePath = product.imagePath;
           _loadAttributes();
         }
       },
@@ -282,6 +287,35 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                               ),
                       )),
                     ],
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.image),
+                            label: Text(_imagePath != null ? 'Change Image' : 'Add Image'),
+                            onPressed: _pickImage,
+                          ),
+                        ),
+                        if (_imagePath != null) ...[
+                          const SizedBox(width: 12),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              File(_imagePath!),
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.clear, color: AppColors.error),
+                            onPressed: () => setState(() => _imagePath = null),
+                          ),
+                        ],
+                      ],
+                    ),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: _saveProduct,
@@ -292,6 +326,14 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
               ),
             ),
     );
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1024);
+    if (picked != null) {
+      setState(() => _imagePath = picked.path);
+    }
   }
 
   List<String> _parseOptions(String? json) {
@@ -318,6 +360,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       price: double.parse(_priceController.text.trim()),
       cost: double.parse(_costController.text.trim()),
       minStock: double.tryParse(_minStockController.text.trim()) ?? 0,
+      imagePath: _imagePath,
       isActive: _isActive,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

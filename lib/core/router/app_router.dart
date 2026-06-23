@@ -23,6 +23,11 @@ import '../../features/employees/presentation/pages/employee_form_page.dart';
 import '../../features/crm/presentation/pages/crm_page.dart';
 import '../../features/reports/presentation/pages/reports_page.dart';
 import '../../features/sync/presentation/pages/sync_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/settings/presentation/pages/receipt_settings_page.dart';
+import '../../features/settings/presentation/pages/profile_page.dart';
+import '../../features/settings/presentation/pages/password_page.dart';
+import '../../features/settings/presentation/pages/appearance_page.dart';
 
 GoRouter appRouter(WidgetRef ref) {
   final authState = ref.watch(authProvider);
@@ -110,6 +115,17 @@ GoRouter appRouter(WidgetRef ref) {
       GoRoute(path: '/crm', name: 'crm', builder: (context, state) => const CrmPage()),
       GoRoute(path: '/reports', name: 'reports', builder: (context, state) => const ReportsPage()),
       GoRoute(path: '/sync', name: 'sync', builder: (context, state) => const SyncPage()),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsPage(),
+        routes: [
+          GoRoute(path: 'receipt', name: 'settings-receipt', builder: (context, state) => const ReceiptSettingsPage()),
+          GoRoute(path: 'profile', name: 'settings-profile', builder: (context, state) => const ProfilePage()),
+          GoRoute(path: 'password', name: 'settings-password', builder: (context, state) => const PasswordPage()),
+          GoRoute(path: 'appearance', name: 'settings-appearance', builder: (context, state) => const AppearancePage()),
+        ],
+      ),
     ],
   );
 }

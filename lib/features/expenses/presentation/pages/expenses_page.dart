@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import '../providers/expenses_providers.dart';
@@ -155,6 +157,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
   final _uuid = const Uuid();
 
   String _selectedCategory = 'Other';
+  String? _receiptImage;
   bool get _isEditing => widget.expense != null;
 
   @override
@@ -165,6 +168,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
       _amountCtrl.text = widget.expense!.amount.toString();
       _noteCtrl.text = widget.expense!.note ?? '';
       _selectedCategory = widget.expense!.category;
+      _receiptImage = widget.expense!.receiptImage;
     }
   }
 
@@ -206,6 +210,31 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
             ),
             const SizedBox(height: 12),
             TextFormField(controller: _noteCtrl, decoration: const InputDecoration(labelText: 'Note'), maxLines: 2),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.receipt),
+                  label: Text(_receiptImage != null ? 'Change Receipt' : 'Add Receipt'),
+                  onPressed: () async {
+                    final picker = ImagePicker();
+                    final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1024);
+                    if (picked != null) setState(() => _receiptImage = picked.path);
+                  },
+                ),
+                if (_receiptImage != null) ...[
+                  const SizedBox(width: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.file(File(_receiptImage!), width: 48, height: 48, fit: BoxFit.cover),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.clear, size: 18, color: AppColors.error),
+                    onPressed: () => setState(() => _receiptImage = null),
+                  ),
+                ],
+              ],
+            ),
             const SizedBox(height: 16),
             ElevatedButton(onPressed: _save, child: Text(_isEditing ? 'Update' : 'Create')),
           ],
@@ -222,6 +251,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
       category: _selectedCategory,
       amount: double.parse(_amountCtrl.text.trim()),
       paidBy: _isEditing ? widget.expense!.paidBy : 'system',
+      receiptImage: _receiptImage,
       note: _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
       createdAt: _isEditing ? widget.expense!.createdAt : DateTime.now(),
     );
