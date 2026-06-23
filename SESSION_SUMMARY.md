@@ -1,7 +1,7 @@
 # TrackBit — Session Summary
 
 **Date:** June 23, 2026
-**Sprint:** 2 (Inventory + POS)
+**Sprint:** 3 (Sales, CRM, Invoicing, Expenses)
 **Status:** ✅ Complete
 
 ---
@@ -91,6 +91,78 @@
 - Optional customer capture (name + phone)
 - Order processing creates: order record, order items, payment record, stock movement (OUT), customer record
 
+### Sales History Feature (`lib/features/sales/`) ✅
+| File | Purpose |
+|---|---|
+| `domain/entities/sale.dart` | Sale entity with status, totals, payment method |
+| `domain/entities/sale_item.dart` | Sale line item entity |
+| `domain/enums/sale_status.dart` | Completed, Refunded, Partially Refunded |
+| `domain/repositories/sales_repository.dart` | Sales query, refund, summary |
+| `data/datasources/sales_local_datasource.dart` | Drift DB operations for sales/items |
+| `data/repositories/sales_repository_impl.dart` | Sales repository with refund processing & auto stock reversion |
+| `presentation/providers/sales_providers.dart` | Riverpod providers for sales |
+| `presentation/pages/sales_page.dart` | Sales list with date/status/payment filters, summaries, refund action |
+| `presentation/pages/sale_detail_page.dart` | Order detail: items, payments, timeline |
+
+**Key behaviors:**
+- Filterable sales history (date range, status, payment method)
+- Daily/monthly summary cards
+- Refund processing with stock reversion and DB audit trail
+- Full order detail view with item breakdown and payment info
+
+### CRM Feature (`lib/features/crm/`) ✅
+| File | Purpose |
+|---|---|
+| `domain/entities/customer.dart` | Customer entity with contact info, loyalty points |
+| `domain/repositories/crm_repository.dart` | Customer CRUD + loyalty + purchase history |
+| `data/datasources/crm_local_datasource.dart` | Drift DB operations for customers |
+| `data/repositories/crm_repository_impl.dart` | Customer repository with purchase history queries |
+| `presentation/providers/crm_providers.dart` | Riverpod providers for CRM |
+| `presentation/pages/crm_page.dart` | Customer list with search, purchase history toggle per customer |
+| `presentation/pages/customer_form_page.dart` | Create/edit customer form |
+
+**Key behaviors:**
+- Customer search by name/phone/email
+- View purchase history inline per customer (expandable)
+- Loyalty points tracking
+- Full CRUD for customer records
+
+### Invoicing Feature (`lib/features/invoicing/`) ✅
+| File | Purpose |
+|---|---|
+| `domain/entities/invoice.dart` | Invoice entity with status, totals, due date |
+| `domain/entities/invoice_item.dart` | Invoice line item entity |
+| `domain/enums/invoice_status.dart` | Draft, Sent, Paid, Overdue, Cancelled |
+| `domain/repositories/invoicing_repository.dart` | Invoice CRUD + item management |
+| `data/datasources/invoicing_local_datasource.dart` | Drift DB operations for invoices/items |
+| `data/repositories/invoicing_repository_impl.dart` | Invoice repository with status transitions |
+| `presentation/providers/invoicing_providers.dart` | Riverpod providers for invoicing |
+| `presentation/pages/invoicing_page.dart` | Invoice list with status/date filters, overdue highlighting |
+| `presentation/pages/invoice_form_page.dart` | Create/edit invoice with dynamic line items |
+
+**Key behaviors:**
+- Invoice list with status filters and overdue highlighting (red badge)
+- Invoice form with dynamic line items (add/remove items, auto-calculated totals)
+- Four statuses: Draft → Sent → Paid | Overdue | Cancelled
+- Subtotal, tax, total auto-computation per invoice
+
+### Expenses Feature (`lib/features/expenses/`) ✅
+| File | Purpose |
+|---|---|
+| `domain/entities/expense.dart` | Expense entity with category, amount, receipt path |
+| `domain/enums/expense_category.dart` | 10 categories (Supplies, Utilities, Rent, etc.) |
+| `domain/repositories/expenses_repository.dart` | Expense CRUD + category summaries |
+| `data/datasources/expenses_local_datasource.dart` | Drift DB operations for expenses |
+| `data/repositories/expenses_repository_impl.dart` | Expense repository with category summaries |
+| `presentation/providers/expenses_providers.dart` | Riverpod providers for expenses |
+| `presentation/pages/expenses_page.dart` | Expense list with category/date filters, summary per category |
+
+**Key behaviors:**
+- Filterable expense list (category, date range)
+- Per-category summary tiles with amounts and counts
+- Full CRUD for expense records
+- 10 predefined expense categories
+
 ### Router Updates
 - `/inventory` → main inventory hub with nested routes:
   - `/inventory/categories`, `/inventory/categories/add`, `/inventory/categories/:id/edit`
@@ -98,11 +170,15 @@
   - `/inventory/stock`, `/inventory/stock/add`
   - `/inventory/alerts`
 - `/pos` → POS main page, `/pos/checkout` → checkout
+- `/sales` → Sales history list, `/sales/:id` → Sale detail
+- `/crm` → Customer list, `/crm/add`, `/crm/:id/edit` → Customer form
+- `/invoicing` → Invoice list, `/invoicing/add`, `/invoicing/:id/edit` → Invoice form
+- `/expenses` → Expense list
 
 ---
 
 ## Build Verification
-- `dart analyze lib/` — **0 errors, 0 warnings**, 25 info-level lint suggestions
+- `dart analyze lib/` — **0 errors, 0 warnings**, 31 info-level lint suggestions
 - `flutter test` — environment-specific tool path issue (WSL); code compiles and analyzes cleanly
 
 ---
@@ -162,10 +238,10 @@ trackbit/
 │       ├── dashboard/         # Main dashboard with nav tiles ✅
 │       ├── inventory/         # Full Inventory (categories, products, stock) ✅
 │       ├── pos/               # Full POS (cart, checkout, payment) ✅
-│       ├── sales/             # Placeholder
-│       ├── invoicing/         # Placeholder
-│       ├── expenses/          # Placeholder
-│       ├── crm/               # Placeholder
+│       ├── sales/             # Sales history, refunds, summaries ✅
+│       ├── invoicing/         # Invoice CRUD with line items ✅
+│       ├── expenses/          # Expense CRUD with categories ✅
+│       ├── crm/               # Customer management with loyalty ✅
 │       ├── employees/         # Placeholder
 │       ├── reports/           # Placeholder
 │       └── sync/              # Placeholder
@@ -177,29 +253,32 @@ trackbit/
 
 ---
 
-## Next Up: Sprint 3 — Supporting Modules
+## Next Up: Sprint 4 — Employees, Reports, Sync & Polish
 
-### Sales History (`lib/features/sales/`)
-- Order history list with filters (date, status, payment method)
-- Order detail view (items, payments, customer)
-- Refund processing
-- Daily/Monthly sales summary
+### Employees (`lib/features/employees/`)
+- Employee management (CRUD)
+- Role assignment per employee
+- Login as employee
+- Time tracking / clock in-out
 
-### Invoicing (`lib/features/invoicing/`)
-- Invoice generation from orders
-- Invoice CRUD (create/edit/delete)
-- PDF export for invoices
-- Invoice printing
+### Reports (`lib/features/reports/`)
+- Dashboard with charts (sales, expenses, profit)
+- PDF report generation
+- Export to CSV/Excel
+- Date-range based reporting
 
-### Expenses (`lib/features/expenses/`)
-- Expense CRUD with categories
-- Receipt image capture
-- Expense reports
+### Sync (`lib/features/sync/`)
+- Cloud backup/restore (SQLite → remote)
+- Multi-device sync
+- Conflict resolution
 
-### CRM (`lib/features/crm/`)
-- Customer database
-- Purchase history per customer
-- Loyalty points management
+### Polish & Production Readiness
+- Auth guard on router (redirect to login if not authenticated)
+- Default admin seeder on first launch
+- Image upload for products & expenses (receipts)
+- Camera-based barcode scanning
+- Receipt printing via ESC/POS
+- Migrate deprecated RadioListTile to RadioGroup
 
 ---
 
