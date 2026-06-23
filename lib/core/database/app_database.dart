@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 import '../../core/constants/app_constants.dart';
+import 'query_executor.dart' as executor;
 
 part 'app_database.g.dart';
 
@@ -297,11 +294,7 @@ class ReceiptSettings extends Table {
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, AppConstants.dbName));
-    return NativeDatabase(file);
-  }));
+  AppDatabase() : super(LazyDatabase(() => executor.createQueryExecutor(AppConstants.dbName)));
 
   @override
   int get schemaVersion => AppConstants.dbVersion;

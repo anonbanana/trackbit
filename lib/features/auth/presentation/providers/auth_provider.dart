@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../domain/entities/app_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../data/datasources/auth_local_datasource.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/utils/storage_service.dart';
 
-final _secureStorage = FlutterSecureStorage();
+final _storage = PlatformStorage();
 
 final authDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
-  return AuthLocalDataSource(ref.watch(databaseProvider), _secureStorage);
+  return AuthLocalDataSource(ref.watch(databaseProvider), _storage);
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {

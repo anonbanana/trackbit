@@ -1,13 +1,13 @@
 import 'package:drift/drift.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/database/app_database.dart' as db;
+import '../../../../core/utils/storage_service.dart';
 import '../../domain/entities/app_user.dart';
 
 class AuthLocalDataSource {
   final db.AppDatabase _database;
-  final FlutterSecureStorage _secureStorage;
+  final StorageService _storage;
 
-  AuthLocalDataSource(this._database, this._secureStorage);
+  AuthLocalDataSource(this._database, this._storage);
 
   Future<AppUser?> getUserByUsername(String username) async {
     final result = await (_database.select(_database.users)
@@ -67,15 +67,15 @@ class AuthLocalDataSource {
   }
 
   Future<void> saveSession(String userId) async {
-    await _secureStorage.write(key: 'session_user_id', value: userId);
+    await _storage.write('session_user_id', userId);
   }
 
   Future<String?> getSessionUserId() async {
-    return await _secureStorage.read(key: 'session_user_id');
+    return await _storage.read('session_user_id');
   }
 
   Future<void> clearSession() async {
-    await _secureStorage.delete(key: 'session_user_id');
+    await _storage.delete('session_user_id');
   }
 
   AppUser _mapUser(db.User row) {
