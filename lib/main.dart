@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 import 'app.dart';
+import 'core/constants/app_constants.dart';
 import 'core/database/app_database.dart';
 import 'core/database/default_permissions.dart';
 import 'features/roles/presentation/providers/role_provider.dart';
@@ -14,6 +19,7 @@ void main() async {
   try {
     await DefaultPermissions.initialize(db);
     await container.read(initializeDefaultRolesProvider.future);
+    await _seedAdminUser(db);
   } catch (e) {
     debugPrint('Initialization error: $e');
   }
@@ -24,4 +30,28 @@ void main() async {
       child: const TrackBitApp(),
     ),
   );
+}
+
+Future<void> _seedAdminUser(AppDatabase db) async {
+  final userCount = await db.select(db.users).get().then((r) => r.length);
+  if (userCount > 0) return;
+
+  final roles = await db.select(db.roles).get();
+  final adminRole = roles.where((r) => r.name == 'super_admin').firstOrNull;
+  if (adminRole == null) return;
+
+  final bytes = utf8.encode(AppConstants.defaultAdminPassword);
+  final hash = sha256.convert(bytes).toString();
+  final now = DateTime.now();
+
+  await db.into(db.users).insert(UsersCompanion(
+    id: Value(const Uuid().v4()),
+    username: Value(AppConstants.defaultAdminUsername),
+    passwordHash: Value(hash),
+    fullName: Value('Administrator'),
+    roleId: Value(adminRole.id),
+    isActive: const Value(true),
+    createdAt: Value(now),
+    updatedAt: Value(now),
+  ));
 }

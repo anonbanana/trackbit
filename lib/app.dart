@@ -8,13 +8,14 @@ class TrackBitApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = appRouter(ref);
     return MaterialApp.router(
       title: 'TrackBit',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }
