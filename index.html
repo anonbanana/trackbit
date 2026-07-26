@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TrackBit - Offline-first business management application. Manage inventory, sales, CRM, POS, employees, and more. Free and open source.">
+    <title>TrackBit - Offline-First Business Management</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <a href="#" class="logo">
+            <span class="logo-icon">TB</span>
+            <span class="logo-text">TrackBit</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#modules">Modules</a></li>
+            <li><a href="#download">Download</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <a href="#download" class="btn btn-primary btn-sm">Get Started</a>
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">Free & Open Source</div>
+            <h1>Business Management<br><span class="gradient-text">Made Simple</span></h1>
+            <p class="hero-description">
+                Offline-first application for managing inventory, sales, customers, employees, invoicing, and more. 
+                Use in browser or install on Android.
+            </p>
+            <div class="hero-buttons">
+                <a href="#download" class="btn btn-primary btn-lg">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download APK
+                </a>
+                <a href="https://app.trackbit.app" class="btn btn-outline btn-lg" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                    </svg>
+                    Use Web App
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">13+</span>
+                    <span class="stat-label">Modules</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">43</span>
+                    <span class="stat-label">Permissions</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Free</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="app-preview">
+                <div class="preview-header">
+                    <div class="preview-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="preview-title">TrackBit Dashboard</span>
+                </div>
+                <div class="preview-content">
+                    <div class="preview-sidebar">
+                        <div class="sidebar-item active">Dashboard</div>
+                        <div class="sidebar-item">Inventory</div>
+                        <div class="sidebar-item">Sales</div>
+                        <div class="sidebar-item">CRM</div>
+                        <div class="sidebar-item">POS</div>
+                    </div>
+                    <div class="preview-main">
+                        <div class="preview-card">
+                            <div class="card-label">Total Sales</div>
+                            <div class="card-value">$24,500</div>
+                            <div class="card-change positive">+12.5%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="card-label">Products</div>
+                            <div class="card-value">1,234</div>
+                            <div class="card-change positive">+8.2%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="card-label">Customers</div>
+                            <div class="card-value">856</div>
+                            <div class="card-change positive">+15.3%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Why Choose <span class="gradient-text">TrackBit</span></h2>
+            <p>Everything you need to manage your business, offline or online</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                </div>
+                <h3>Offline-First</h3>
+                <p>Works without internet. All data stored locally using SQLite. Sync when ready.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                <h3>Multi-Platform</h3>
+                <p>Use in any browser, install on Android. Same app, same data, everywhere.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h3>Secure</h3>
+                <p>Role-based access control with 43 permissions. Your data stays on your device.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                    </svg>
+                </div>
+                <h3>Fast</h3>
+                <p>Built with Flutter for native performance. Instant loading, smooth animations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <h3>Free & Open Source</h3>
+                <p>MIT licensed. No hidden fees, no subscriptions. Use it forever.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3>P2P Sync</h3>
+                <p>Sync data between devices using peer-to-peer WebSocket. No cloud required.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modules Section -->
+<section class="modules" id="modules">
+    <div class="container">
+        <div class="section-header">
+            <h2>13 Complete <span class="gradient-text">Modules</span></h2>
+            <p>Everything you need to run your business in one application</p>
+        </div>
+        <div class="modules-grid">
+            <div class="module-card">
+                <div class="module-icon">📊</div>
+                <h4>Dashboard</h4>
+                <p>Overview of all business metrics</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">📦</div>
+                <h4>Inventory</h4>
+                <p>Products, stock, categories</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">💰</div>
+                <h4>POS</h4>
+                <p>Point of sale with cart</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">🛒</div>
+                <h4>Sales</h4>
+                <p>Orders and transactions</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">👥</div>
+                <h4>CRM</h4>
+                <p>Customer management</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">📋</div>
+                <h4>Invoicing</h4>
+                <p>Create and send invoices</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">💸</div>
+                <h4>Expenses</h4>
+                <p>Track business expenses</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">👤</div>
+                <h4>Employees</h4>
+                <p>Staff management</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">🔐</div>
+                <h4>Roles</h4>
+                <p>Access control & permissions</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">🔄</div>
+                <h4>Sync</h4>
+                <p>P2P data synchronization</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">📈</div>
+                <h4>Reports</h4>
+                <p>Business analytics</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">⚙️</div>
+                <h4>Settings</h4>
+                <p>App configuration</p>
+            </div>
+            <div class="module-card">
+                <div class="module-icon">🏷️</div>
+                <h4>Barcode</h4>
+                <p>Scan and generate barcodes</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Download Section -->
+<section class="download" id="download">
+    <div class="container">
+        <div class="section-header">
+            <h2>Get <span class="gradient-text">TrackBit</span></h2>
+            <p>Start managing your business today</p>
+        </div>
+        <div class="download-grid">
+            <div class="download-card">
+                <div class="download-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                    </svg>
+                </div>
+                <h3>Web App</h3>
+                <p>Use directly in your browser. No installation required.</p>
+                <a href="https://app.trackbit.app" class="btn btn-primary" target="_blank">Open Web App</a>
+            </div>
+            <div class="download-card featured">
+                <div class="download-badge">Recommended</div>
+                <div class="download-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 16l-1-5h16l-1 5H5z"></path>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <h3>Android APK</h3>
+                <p>Install on your Android device for the best experience.</p>
+                <a href="https://github.com/anonbanana/trackbit/releases/latest" class="btn btn-primary" target="_blank">Download APK</a>
+            </div>
+            <div class="download-card">
+                <div class="download-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                </div>
+                <h3>Source Code</h3>
+                <p>Build from source. Requires Flutter SDK.</p>
+                <a href="https://github.com/anonbanana/trackbit" class="btn btn-outline" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq" id="faq">
+    <div class="container">
+        <div class="section-header">
+            <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
+            <p>Quick answers about TrackBit</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">
+                    Is TrackBit really free?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes! TrackBit is 100% free and open source under the MIT license. No hidden fees, no subscriptions. You can use it forever.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Does it work offline?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolutely! TrackBit is built as an offline-first application. All data is stored locally on your device using SQLite. You can sync between devices when you have internet.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I use it on multiple devices?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes! TrackBit supports peer-to-peer synchronization between devices. You can connect multiple devices and sync your data without any cloud service.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    How do I install on Android?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Download the APK from GitHub Releases, enable "Install from unknown sources" in your Android settings, and open the APK file to install.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Is my data secure?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>TrackBit uses role-based access control with 43 different permissions. Your data stays on your device - we never collect or transmit any of your business data.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I contribute?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolutely! TrackBit is open source and welcomes contributions. Visit our GitHub repository to submit pull requests or report issues.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="container">
+        <h2>Ready to Manage Your Business?</h2>
+        <p>Start using TrackBit today. Free, open source, and offline-first.</p>
+        <div class="cta-buttons">
+            <a href="#download" class="btn btn-primary btn-lg">Get Started Free</a>
+            <a href="https://github.com/anonbanana/trackbit" class="btn btn-outline btn-lg" target="_blank">View Source Code</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <span class="logo-icon">TB</span>
+                    <span class="logo-text">TrackBit</span>
+                </a>
+                <p>Offline-first business management application. Free and open source.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#modules">Modules</a></li>
+                        <li><a href="#download">Download</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/anonbanana/trackbit" target="_blank">GitHub</a></li>
+                        <li><a href="https://github.com/anonbanana/trackbit/issues" target="_blank">Report Issue</a></li>
+                        <li><a href="https://github.com/anonbanana/trackbit/releases" target="_blank">Releases</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="https://github.com/sponsors/anonbanana" target="_blank">Donate</a></li>
+                        <li><a href="https://github.com/anonbanana/trackbit/blob/main/LICENSE" target="_blank">License</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TrackBit. Free and open source under MIT License.</p>
+            <div class="footer-social">
+                <a href="https://github.com/anonbanana/trackbit" target="_blank" aria-label="GitHub">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Mobile menu toggle
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const navLinks = document.querySelector('.nav-links');
+
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+    });
+}
+
+// FAQ accordion
+document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+        const item = button.parentElement;
+        const answer = item.querySelector('.faq-answer');
+        const icon = button.querySelector('.faq-icon');
+        
+        // Close other items
+        document.querySelectorAll('.faq-item').forEach(otherItem => {
+            if (otherItem !== item) {
+                otherItem.classList.remove('active');
+                otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                otherItem.querySelector('.faq-icon').textContent = '+';
+            }
+        });
+        
+        // Toggle current item
+        item.classList.toggle('active');
+        if (item.classList.contains('active')) {
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            icon.textContent = '−';
+        } else {
+            answer.style.maxHeight = null;
+            icon.textContent = '+';
+        }
+    });
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Close mobile menu
+            navLinks.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        }
+    });
+});
+</script>
+
+</body>
+</html>
