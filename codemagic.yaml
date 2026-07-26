@@ -1,0 +1,59 @@
+workflows:
+  ios-release:
+    name: iOS Release Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Run tests
+        script: flutter test
+      - name: Build iOS (no codesign for testing)
+        script: flutter build ios --release --no-codesign
+    artifacts:
+      - build/ios/iphoneos/Runner.app
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true
+
+  android-release:
+    name: Android Release Build
+    max_build_duration: 30
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    environment:
+      flutter: stable
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Run tests
+        script: flutter test
+      - name: Build APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true

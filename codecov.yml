@@ -1,0 +1,42 @@
+codecov:
+  require_ci_to_pass: yes
+  coverage:
+    precision: 2
+    round: down
+    range: "60...90"
+    status:
+      project:
+        default:
+          target: 80%
+          threshold: 2%
+          if_ci_failed: error
+      patch:
+        default:
+          target: 75%
+          threshold: 5%
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: no
+
+comment:
+  layout: "reach,diff,flags,files,footer"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+
+ignore:
+  - "**/*.g.dart"
+  - "**/*.freezed.dart"
+  - "**/*.mocks.dart"
+  - "**/*.gen.dart"
+  - "test/**"
+  - "android/**"
+  - "ios/**"
+  - "web/**"
+  - "assets/**"

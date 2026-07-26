@@ -26,6 +26,7 @@ dependencies:
   multicast_dns: ^0.3.2
   image_picker: ^1.1.2
   shared_preferences: ^2.3.5
+  sentry_flutter: ^8.14.1
 
 dev_dependencies:
   flutter_test:
