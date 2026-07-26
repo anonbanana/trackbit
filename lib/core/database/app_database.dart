@@ -25,7 +25,8 @@ class Roles extends Table {
   TextColumn get description => text().nullable()();
   TextColumn get parentRoleId => text().nullable().references(Roles, #id)();
   BoolColumn get isSystem => boolean().withDefault(const Constant(false))();
-  BoolColumn get isCustomizable => boolean().withDefault(const Constant(true))();
+  BoolColumn get isCustomizable =>
+      boolean().withDefault(const Constant(true))();
   IntColumn get level => integer()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -232,7 +233,8 @@ class SyncQueue extends Table {
   TextColumn get status => text().withDefault(const Constant('PENDING'))();
   TextColumn get deviceId => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get syncedAt => dateTime().nullable()();}
+  DateTimeColumn get syncedAt => dateTime().nullable()();
+}
 
 class SyncPeers extends Table {
   TextColumn get id => text()();
@@ -294,7 +296,10 @@ class ReceiptSettings extends Table {
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(LazyDatabase(() => executor.createQueryExecutor(AppConstants.dbName)));
+  AppDatabase()
+    : super(
+        LazyDatabase(() => executor.createQueryExecutor(AppConstants.dbName)),
+      );
 
   @override
   int get schemaVersion => AppConstants.dbVersion;

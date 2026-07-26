@@ -52,10 +52,7 @@ void main() {
     });
 
     test('defaults to error type for unknown type', () {
-      final json = {
-        'type': 'unknown_type',
-        'deviceId': 'device-000',
-      };
+      final json = {'type': 'unknown_type', 'deviceId': 'device-000'};
 
       final message = SyncMessage.fromJson(json);
       expect(message.type, SyncMessageType.error);
@@ -102,7 +99,8 @@ void main() {
     });
 
     test('connects to unreachable address', () async {
-      final result = await service.connect('192.0.2.1', 99999)
+      final result = await service
+          .connect('192.0.2.1', 99999)
           .timeout(const Duration(seconds: 3), onTimeout: () => false);
       expect(result, isFalse);
       expect(service.isConnected, isFalse);

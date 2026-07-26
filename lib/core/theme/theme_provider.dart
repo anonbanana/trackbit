@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/settings/data/datasources/settings_local_datasource.dart';
 import '../../core/database/app_database.dart';
 
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((
+  ref,
+) {
   return ThemeModeNotifier(ref);
 });
 
@@ -32,7 +34,10 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
     state = newMode;
     try {
       final ds = SettingsLocalDataSource(_ref.read(databaseProvider));
-      await ds.setSetting('theme_mode', newMode == ThemeMode.dark ? 'dark' : 'light');
+      await ds.setSetting(
+        'theme_mode',
+        newMode == ThemeMode.dark ? 'dark' : 'light',
+      );
     } catch (_) {}
   }
 }

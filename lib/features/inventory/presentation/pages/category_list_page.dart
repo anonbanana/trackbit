@@ -37,7 +37,9 @@ class CategoryListPage extends ConsumerWidget {
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: _getCategoryColor(category.type).withValues(alpha: 0.1),
+                    backgroundColor: _getCategoryColor(
+                      category.type,
+                    ).withValues(alpha: 0.1),
                     child: Icon(
                       _getCategoryIcon(category.type),
                       color: _getCategoryColor(category.type),
@@ -56,15 +58,20 @@ class CategoryListPage extends ConsumerWidget {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit, size: 18),
-                        onPressed: () => context.go('/inventory/categories/${category.id}/edit'),
+                        onPressed: () => context.push(
+                          '/inventory/categories/${category.id}/edit',
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete_outline, size: 18),
-                        onPressed: category.isSystem ? null : () => _deleteCategory(context, ref, category),
+                        onPressed: category.isSystem
+                            ? null
+                            : () => _deleteCategory(context, ref, category),
                       ),
                     ],
                   ),
-                  onTap: () => context.go('/inventory/categories/${category.id}/edit'),
+                  onTap: () =>
+                      context.push('/inventory/categories/${category.id}/edit'),
                 ),
               );
             },
@@ -74,7 +81,7 @@ class CategoryListPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/inventory/categories/add'),
+        onPressed: () => context.push('/inventory/categories/add'),
         child: const Icon(Icons.add),
       ),
     );
@@ -87,8 +94,14 @@ class CategoryListPage extends ConsumerWidget {
         title: const Text('Delete Category'),
         content: Text('Delete "${category.name}"?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete'),
+          ),
         ],
       ),
     );
@@ -97,9 +110,9 @@ class CategoryListPage extends ConsumerWidget {
       final result = await repo.deleteCategory(category.id);
       result.when(
         success: (_) => ref.invalidate(categoriesProvider),
-        error: (f) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${f.message}')),
-        ),
+        error: (f) => ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
       );
     }
   }
@@ -112,19 +125,30 @@ class CategoryListPage extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: CategoryType.values.map((t) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Icon(_getCategoryIcon(t), size: 18, color: _getCategoryColor(t)),
-                const SizedBox(width: 8),
-                Text(t.label),
-              ],
-            ),
-          )).toList(),
+          children: CategoryType.values
+              .map(
+                (t) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _getCategoryIcon(t),
+                        size: 18,
+                        color: _getCategoryColor(t),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(t.label),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('OK')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('OK'),
+          ),
         ],
       ),
     );
@@ -132,25 +156,39 @@ class CategoryListPage extends ConsumerWidget {
 
   Color _getCategoryColor(CategoryType type) {
     switch (type) {
-      case CategoryType.food: return AppColors.success;
-      case CategoryType.clothing: return AppColors.secondary;
-      case CategoryType.electronics: return AppColors.primary;
-      case CategoryType.gaming: return AppColors.accent;
-      case CategoryType.optical: return AppColors.info;
-      case CategoryType.luggage: return AppColors.warning;
-      case CategoryType.custom: return AppColors.textSecondary;
+      case CategoryType.food:
+        return AppColors.success;
+      case CategoryType.clothing:
+        return AppColors.secondary;
+      case CategoryType.electronics:
+        return AppColors.primary;
+      case CategoryType.gaming:
+        return AppColors.accent;
+      case CategoryType.optical:
+        return AppColors.info;
+      case CategoryType.luggage:
+        return AppColors.warning;
+      case CategoryType.custom:
+        return const Color(0xFF64748B);
     }
   }
 
   IconData _getCategoryIcon(CategoryType type) {
     switch (type) {
-      case CategoryType.food: return Icons.restaurant;
-      case CategoryType.clothing: return Icons.checkroom;
-      case CategoryType.electronics: return Icons.devices;
-      case CategoryType.gaming: return Icons.sports_esports;
-      case CategoryType.optical: return Icons.visibility;
-      case CategoryType.luggage: return Icons.luggage;
-      case CategoryType.custom: return Icons.category;
+      case CategoryType.food:
+        return Icons.restaurant;
+      case CategoryType.clothing:
+        return Icons.checkroom;
+      case CategoryType.electronics:
+        return Icons.devices;
+      case CategoryType.gaming:
+        return Icons.sports_esports;
+      case CategoryType.optical:
+        return Icons.visibility;
+      case CategoryType.luggage:
+        return Icons.luggage;
+      case CategoryType.custom:
+        return Icons.category;
     }
   }
 }

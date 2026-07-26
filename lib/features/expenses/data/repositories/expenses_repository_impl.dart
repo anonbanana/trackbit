@@ -14,14 +14,17 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
   Future<Result<List<Expense>>> getAllExpenses({String? category}) async {
     try {
       final data = await _dataSource.getAllExpenses(category: category);
-      final expenses = <Expense>[];
-      for (final e in data) {
-        final userName = await _dataSource.getUserName(e.paidBy);
-        expenses.add(_mapExpense(e, userName));
+      final userIds = data.map((e) => e.paidBy).toSet();
+      final userNames = <String, String?>{};
+      for (final uid in userIds) {
+        userNames[uid] = await _dataSource.getUserName(uid);
       }
+      final expenses = data
+          .map((e) => _mapExpense(e, userNames[e.paidBy]))
+          .toList();
       return Success(expenses);
     } catch (e) {
-      return Error(DatabaseFailure('Failed to load expenses: $e'));
+      return const Error(DatabaseFailure('Failed to load expenses'));
     }
   }
 
@@ -40,16 +43,18 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
   @override
   Future<Result<Expense>> createExpense(Expense expense) async {
     try {
-      await _dataSource.insertExpense(db.ExpensesCompanion(
-        id: Value(expense.id),
-        title: Value(expense.title),
-        category: Value(expense.category),
-        amount: Value(expense.amount),
-        paidBy: Value(expense.paidBy),
-        receiptImage: Value(expense.receiptImage),
-        note: Value(expense.note),
-        createdAt: Value(expense.createdAt),
-      ));
+      await _dataSource.insertExpense(
+        db.ExpensesCompanion(
+          id: Value(expense.id),
+          title: Value(expense.title),
+          category: Value(expense.category),
+          amount: Value(expense.amount),
+          paidBy: Value(expense.paidBy),
+          receiptImage: Value(expense.receiptImage),
+          note: Value(expense.note),
+          createdAt: Value(expense.createdAt),
+        ),
+      );
       return Success(expense);
     } catch (e) {
       return Error(DatabaseFailure('Failed to create expense: $e'));
@@ -59,14 +64,17 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
   @override
   Future<Result<Expense>> updateExpense(Expense expense) async {
     try {
-      await _dataSource.updateExpense(db.ExpensesCompanion(
-        title: Value(expense.title),
-        category: Value(expense.category),
-        amount: Value(expense.amount),
-        paidBy: Value(expense.paidBy),
-        receiptImage: Value(expense.receiptImage),
-        note: Value(expense.note),
-      ), expense.id);
+      await _dataSource.updateExpense(
+        db.ExpensesCompanion(
+          title: Value(expense.title),
+          category: Value(expense.category),
+          amount: Value(expense.amount),
+          paidBy: Value(expense.paidBy),
+          receiptImage: Value(expense.receiptImage),
+          note: Value(expense.note),
+        ),
+        expense.id,
+      );
       return Success(expense);
     } catch (e) {
       return Error(DatabaseFailure('Failed to update expense: $e'));
@@ -87,7 +95,15 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
   Future<Result<List<String>>> getExpenseCategories() async {
     try {
       final categories = await _dataSource.getCategories();
-      final all = ['Rent', 'Utilities', 'Salaries', 'Supplies', 'Marketing', 'Maintenance', 'Other'];
+      final all = [
+        'Rent',
+        'Utilities',
+        'Salaries',
+        'Supplies',
+        'Marketing',
+        'Maintenance',
+        'Other',
+      ];
       for (final c in categories) {
         if (!all.contains(c)) all.add(c);
       }

@@ -23,7 +23,7 @@ class InventoryPage extends ConsumerWidget {
               title: 'Categories',
               subtitle: 'Manage product categories & types',
               color: AppColors.primary,
-              onTap: () => context.go('/inventory/categories'),
+              onTap: () => context.push('/inventory/categories'),
             ),
             const SizedBox(height: 12),
             _InventoryCard(
@@ -31,7 +31,7 @@ class InventoryPage extends ConsumerWidget {
               title: 'Products',
               subtitle: 'Add and manage products',
               color: AppColors.secondary,
-              onTap: () => context.go('/inventory/products'),
+              onTap: () => context.push('/inventory/products'),
             ),
             const SizedBox(height: 12),
             _InventoryCard(
@@ -39,7 +39,7 @@ class InventoryPage extends ConsumerWidget {
               title: 'Stock Movements',
               subtitle: 'Record stock in/out/adjustments',
               color: AppColors.accent,
-              onTap: () => context.go('/inventory/stock'),
+              onTap: () => context.push('/inventory/stock'),
             ),
             const SizedBox(height: 12),
             _InventoryCard(
@@ -48,11 +48,12 @@ class InventoryPage extends ConsumerWidget {
               subtitle: 'Products below minimum stock',
               color: AppColors.warning,
               badge: lowStockAsync.when(
-                data: (products) => products.isNotEmpty ? '${products.length}' : null,
+                data: (products) =>
+                    products.isNotEmpty ? '${products.length}' : null,
                 loading: () => null,
                 error: (_, __) => null,
               ),
-              onTap: () => context.go('/inventory/alerts'),
+              onTap: () => context.push('/inventory/alerts'),
             ),
           ],
         ),
@@ -99,7 +100,10 @@ class _InventoryCard extends StatelessWidget {
                   color: AppColors.warning,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(badge!, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                child: Text(
+                  badge!,
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
               ),
             const SizedBox(width: 8),
             const Icon(Icons.arrow_forward_ios, size: 16),

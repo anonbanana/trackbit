@@ -15,18 +15,12 @@ import 'features/roles/presentation/providers/role_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = const String.fromEnvironment(
-        'SENTRY_DSN',
-        defaultValue: '',
-      );
-      options.tracesSampleRate = 1.0;
-      options.profilesSampleRate = 1.0;
-      options.debug = false;
-    },
-    appRunner: () => _runApp(),
-  );
+  await SentryFlutter.init((options) {
+    options.dsn = const String.fromEnvironment('SENTRY_DSN', defaultValue: '');
+    options.tracesSampleRate = 1.0;
+    options.profilesSampleRate = 1.0;
+    options.debug = false;
+  }, appRunner: () => _runApp());
 }
 
 Future<void> _runApp() async {
@@ -43,10 +37,7 @@ Future<void> _runApp() async {
   }
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const TrackBitApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const TrackBitApp()),
   );
 }
 
@@ -62,14 +53,18 @@ Future<void> _seedAdminUser(AppDatabase db) async {
   final hash = sha256.convert(bytes).toString();
   final now = DateTime.now().toUtc();
 
-  await db.into(db.users).insert(UsersCompanion(
-    id: Value(const Uuid().v4()),
-    username: const Value(AppConstants.defaultAdminUsername),
-    passwordHash: Value(hash),
-    fullName: const Value('Administrator'),
-    roleId: Value(adminRole.id),
-    isActive: const Value(true),
-    createdAt: Value(now),
-    updatedAt: Value(now),
-  ));
+  await db
+      .into(db.users)
+      .insert(
+        UsersCompanion(
+          id: Value(const Uuid().v4()),
+          username: const Value(AppConstants.defaultAdminUsername),
+          passwordHash: Value(hash),
+          fullName: const Value('Administrator'),
+          roleId: Value(adminRole.id),
+          isActive: const Value(true),
+          createdAt: Value(now),
+          updatedAt: Value(now),
+        ),
+      );
 }

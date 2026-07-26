@@ -36,7 +36,9 @@ GoRouter appRouter(WidgetRef ref) {
     initialLocation: '/login',
     redirect: (context, state) {
       final isLoggedIn = authState.status == AuthStatus.authenticated;
-      final isAuthRoute = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+      final isAuthRoute =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
       final isInitial = authState.status == AuthStatus.initial;
 
       if (isInitial) return null;
@@ -46,16 +48,37 @@ GoRouter appRouter(WidgetRef ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/login', name: 'login', builder: (context, state) => const LoginPage()),
-      GoRoute(path: '/register', name: 'register', builder: (context, state) => const RegisterPage()),
-      GoRoute(path: '/dashboard', name: 'dashboard', builder: (context, state) => const DashboardPage()),
+      GoRoute(
+        path: '/login',
+        name: 'login',
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/register',
+        name: 'register',
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: '/dashboard',
+        name: 'dashboard',
+        builder: (context, state) => const DashboardPage(),
+      ),
       GoRoute(
         path: '/roles',
         name: 'roles',
         builder: (context, state) => const RoleListPage(),
         routes: [
-          GoRoute(path: 'add', name: 'role-add', builder: (context, state) => const RoleFormPage()),
-          GoRoute(path: ':id/edit', name: 'role-edit', builder: (context, state) => RoleFormPage(roleId: state.pathParameters['id'])),
+          GoRoute(
+            path: 'add',
+            name: 'role-add',
+            builder: (context, state) => const RoleFormPage(),
+          ),
+          GoRoute(
+            path: ':id/edit',
+            name: 'role-edit',
+            builder: (context, state) =>
+                RoleFormPage(roleId: state.pathParameters['id']),
+          ),
         ],
       ),
       GoRoute(
@@ -68,8 +91,17 @@ GoRouter appRouter(WidgetRef ref) {
             name: 'category-list',
             builder: (context, state) => const CategoryListPage(),
             routes: [
-              GoRoute(path: 'add', name: 'category-add', builder: (context, state) => const CategoryFormPage()),
-              GoRoute(path: ':id/edit', name: 'category-edit', builder: (context, state) => CategoryFormPage(categoryId: state.pathParameters['id'])),
+              GoRoute(
+                path: 'add',
+                name: 'category-add',
+                builder: (context, state) => const CategoryFormPage(),
+              ),
+              GoRoute(
+                path: ':id/edit',
+                name: 'category-edit',
+                builder: (context, state) =>
+                    CategoryFormPage(categoryId: state.pathParameters['id']),
+              ),
             ],
           ),
           GoRoute(
@@ -77,8 +109,17 @@ GoRouter appRouter(WidgetRef ref) {
             name: 'product-list',
             builder: (context, state) => const ProductListPage(),
             routes: [
-              GoRoute(path: 'add', name: 'product-add', builder: (context, state) => const ProductFormPage()),
-              GoRoute(path: ':id/edit', name: 'product-edit', builder: (context, state) => ProductFormPage(productId: state.pathParameters['id'])),
+              GoRoute(
+                path: 'add',
+                name: 'product-add',
+                builder: (context, state) => const ProductFormPage(),
+              ),
+              GoRoute(
+                path: ':id/edit',
+                name: 'product-edit',
+                builder: (context, state) =>
+                    ProductFormPage(productId: state.pathParameters['id']),
+              ),
             ],
           ),
           GoRoute(
@@ -86,10 +127,19 @@ GoRouter appRouter(WidgetRef ref) {
             name: 'stock-movements',
             builder: (context, state) => const StockMovementPage(),
             routes: [
-              GoRoute(path: 'add', name: 'stock-movement-add', builder: (context, state) => StockMovementPage(productId: state.extra as String?)),
+              GoRoute(
+                path: 'add',
+                name: 'stock-movement-add',
+                builder: (context, state) =>
+                    StockMovementPage(productId: state.extra as String?),
+              ),
             ],
           ),
-          GoRoute(path: 'alerts', name: 'low-stock', builder: (context, state) => const LowStockPage()),
+          GoRoute(
+            path: 'alerts',
+            name: 'low-stock',
+            builder: (context, state) => const LowStockPage(),
+          ),
         ],
       ),
       GoRoute(
@@ -97,33 +147,86 @@ GoRouter appRouter(WidgetRef ref) {
         name: 'pos',
         builder: (context, state) => const PosMainPage(),
         routes: [
-          GoRoute(path: 'checkout', name: 'pos-checkout', builder: (context, state) => const CheckoutPage()),
+          GoRoute(
+            path: 'checkout',
+            name: 'pos-checkout',
+            builder: (context, state) => const CheckoutPage(),
+          ),
         ],
       ),
-      GoRoute(path: '/sales', name: 'sales', builder: (context, state) => const SalesPage()),
-      GoRoute(path: '/invoicing', name: 'invoicing', builder: (context, state) => const InvoicingPage()),
-      GoRoute(path: '/expenses', name: 'expenses', builder: (context, state) => const ExpensesPage()),
+      GoRoute(
+        path: '/sales',
+        name: 'sales',
+        builder: (context, state) => const SalesPage(),
+      ),
+      GoRoute(
+        path: '/invoicing',
+        name: 'invoicing',
+        builder: (context, state) => const InvoicingPage(),
+      ),
+      GoRoute(
+        path: '/expenses',
+        name: 'expenses',
+        builder: (context, state) => const ExpensesPage(),
+      ),
       GoRoute(
         path: '/employees',
         name: 'employees',
         builder: (context, state) => const EmployeesPage(),
         routes: [
-          GoRoute(path: 'add', name: 'employee-add', builder: (context, state) => const EmployeeFormPage()),
-          GoRoute(path: ':id/edit', name: 'employee-edit', builder: (context, state) => EmployeeFormPage(employeeId: state.pathParameters['id'])),
+          GoRoute(
+            path: 'add',
+            name: 'employee-add',
+            builder: (context, state) => const EmployeeFormPage(),
+          ),
+          GoRoute(
+            path: ':id/edit',
+            name: 'employee-edit',
+            builder: (context, state) =>
+                EmployeeFormPage(employeeId: state.pathParameters['id']),
+          ),
         ],
       ),
-      GoRoute(path: '/crm', name: 'crm', builder: (context, state) => const CrmPage()),
-      GoRoute(path: '/reports', name: 'reports', builder: (context, state) => const ReportsPage()),
-      GoRoute(path: '/sync', name: 'sync', builder: (context, state) => const SyncPage()),
+      GoRoute(
+        path: '/crm',
+        name: 'crm',
+        builder: (context, state) => const CrmPage(),
+      ),
+      GoRoute(
+        path: '/reports',
+        name: 'reports',
+        builder: (context, state) => const ReportsPage(),
+      ),
+      GoRoute(
+        path: '/sync',
+        name: 'sync',
+        builder: (context, state) => const SyncPage(),
+      ),
       GoRoute(
         path: '/settings',
         name: 'settings',
         builder: (context, state) => const SettingsPage(),
         routes: [
-          GoRoute(path: 'receipt', name: 'settings-receipt', builder: (context, state) => const ReceiptSettingsPage()),
-          GoRoute(path: 'profile', name: 'settings-profile', builder: (context, state) => const ProfilePage()),
-          GoRoute(path: 'password', name: 'settings-password', builder: (context, state) => const PasswordPage()),
-          GoRoute(path: 'appearance', name: 'settings-appearance', builder: (context, state) => const AppearancePage()),
+          GoRoute(
+            path: 'receipt',
+            name: 'settings-receipt',
+            builder: (context, state) => const ReceiptSettingsPage(),
+          ),
+          GoRoute(
+            path: 'profile',
+            name: 'settings-profile',
+            builder: (context, state) => const ProfilePage(),
+          ),
+          GoRoute(
+            path: 'password',
+            name: 'settings-password',
+            builder: (context, state) => const PasswordPage(),
+          ),
+          GoRoute(
+            path: 'appearance',
+            name: 'settings-appearance',
+            builder: (context, state) => const AppearancePage(),
+          ),
         ],
       ),
     ],

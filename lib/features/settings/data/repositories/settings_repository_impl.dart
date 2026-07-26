@@ -14,7 +14,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   Future<Result<ReceiptSettings>> getReceiptSettings() async {
     try {
       final data = await _dataSource.getReceiptSettings();
-      if (data == null) return Success(const ReceiptSettings());
+      if (data == null) return const Success(ReceiptSettings());
       return Success(_mapSettings(data));
     } catch (e) {
       return Error(DatabaseFailure('Failed to load settings: $e'));
@@ -24,19 +24,21 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> saveReceiptSettings(ReceiptSettings settings) async {
     try {
-      await _dataSource.saveReceiptSettings(db.ReceiptSettingsCompanion(
-        id: const Value('default'),
-        storeName: Value(settings.storeName),
-        storeAddress: Value(settings.storeAddress),
-        storePhone: Value(settings.storePhone),
-        taxRate: Value(settings.taxRate),
-        paperWidth: Value(settings.paperWidth),
-        headerText: Value(settings.headerText),
-        footerText: Value(settings.footerText),
-        logoPath: Value(settings.logoPath),
-        showTax: Value(settings.showTax),
-        showDiscount: Value(settings.showDiscount),
-      ));
+      await _dataSource.saveReceiptSettings(
+        db.ReceiptSettingsCompanion(
+          id: const Value('default'),
+          storeName: Value(settings.storeName),
+          storeAddress: Value(settings.storeAddress),
+          storePhone: Value(settings.storePhone),
+          taxRate: Value(settings.taxRate),
+          paperWidth: Value(settings.paperWidth),
+          headerText: Value(settings.headerText),
+          footerText: Value(settings.footerText),
+          logoPath: Value(settings.logoPath),
+          showTax: Value(settings.showTax),
+          showDiscount: Value(settings.showDiscount),
+        ),
+      );
       return const Success(null);
     } catch (e) {
       return Error(DatabaseFailure('Failed to save settings: $e'));

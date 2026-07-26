@@ -53,17 +53,27 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<Result<void>> deleteCategory(String id) async {
     try {
+      final hasProducts = await _dataSource.hasProductsInCategory(id);
+      if (hasProducts) {
+        return const Error(
+          DatabaseFailure('Cannot delete category with existing products'),
+        );
+      }
       await _dataSource.deleteCategory(id);
       return const Success(null);
     } catch (e) {
-      return Error(DatabaseFailure('Failed to delete category: $e'));
+      return const Error(DatabaseFailure('Failed to delete category'));
     }
   }
 
   @override
-  Future<Result<List<CategoryAttribute>>> getAttributesByCategoryType(String categoryType) async {
+  Future<Result<List<CategoryAttribute>>> getAttributesByCategoryType(
+    String categoryType,
+  ) async {
     try {
-      final attributes = await _dataSource.getAttributesByCategoryType(categoryType);
+      final attributes = await _dataSource.getAttributesByCategoryType(
+        categoryType,
+      );
       return Success(attributes);
     } catch (e) {
       return Error(DatabaseFailure('Failed to load attributes: $e'));
@@ -71,7 +81,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Result<void>> saveCategoryAttributes(List<CategoryAttribute> attributes) async {
+  Future<Result<void>> saveCategoryAttributes(
+    List<CategoryAttribute> attributes,
+  ) async {
     try {
       if (attributes.isEmpty) return const Success(null);
       final categoryType = attributes.first.categoryType.name;

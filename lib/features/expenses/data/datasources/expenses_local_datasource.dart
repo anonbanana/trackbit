@@ -7,7 +7,9 @@ class ExpensesLocalDataSource {
 
   Future<List<db.Expense>> getAllExpenses({String? category}) async {
     var query = _database.select(_database.expenses)
-      ..orderBy([(t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)]);
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+      ]);
     if (category != null && category.isNotEmpty) {
       query = query..where((t) => t.category.equals(category));
     }
@@ -15,9 +17,9 @@ class ExpensesLocalDataSource {
   }
 
   Future<db.Expense?> getExpenseById(String id) async {
-    return await (_database.select(_database.expenses)
-      ..where((t) => t.id.equals(id))
-    ).getSingleOrNull();
+    return await (_database.select(
+      _database.expenses,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   Future<void> insertExpense(db.ExpensesCompanion expense) async {
@@ -25,15 +27,15 @@ class ExpensesLocalDataSource {
   }
 
   Future<void> updateExpense(db.ExpensesCompanion expense, String id) async {
-    await (_database.update(_database.expenses)
-      ..where((t) => t.id.equals(id))
-    ).write(expense);
+    await (_database.update(
+      _database.expenses,
+    )..where((t) => t.id.equals(id))).write(expense);
   }
 
   Future<void> deleteExpense(String id) async {
-    await (_database.delete(_database.expenses)
-      ..where((t) => t.id.equals(id))
-    ).go();
+    await (_database.delete(
+      _database.expenses,
+    )..where((t) => t.id.equals(id))).go();
   }
 
   Future<List<String>> getCategories() async {
@@ -43,9 +45,9 @@ class ExpensesLocalDataSource {
   }
 
   Future<double> getTotalByCategory(String category) async {
-    final expenses = await (_database.select(_database.expenses)
-      ..where((t) => t.category.equals(category))
-    ).get();
+    final expenses = await (_database.select(
+      _database.expenses,
+    )..where((t) => t.category.equals(category))).get();
     double total = 0;
     for (final e in expenses) {
       total += e.amount;
@@ -54,9 +56,9 @@ class ExpensesLocalDataSource {
   }
 
   Future<String?> getUserName(String userId) async {
-    final user = await (_database.select(_database.users)
-      ..where((t) => t.id.equals(userId))
-    ).getSingleOrNull();
+    final user = await (_database.select(
+      _database.users,
+    )..where((t) => t.id.equals(userId))).getSingleOrNull();
     return user?.fullName;
   }
 }

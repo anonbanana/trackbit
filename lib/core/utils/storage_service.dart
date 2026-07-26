@@ -11,7 +11,8 @@ abstract class StorageService {
 class PlatformStorage implements StorageService {
   final FlutterSecureStorage? _secureStorage;
 
-  PlatformStorage() : _secureStorage = kIsWeb ? null : FlutterSecureStorage();
+  PlatformStorage()
+    : _secureStorage = kIsWeb ? null : const FlutterSecureStorage();
 
   @override
   Future<void> write(String key, String value) async {

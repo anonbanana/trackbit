@@ -31,91 +31,98 @@ class DashboardPage extends ConsumerWidget {
           children: [
             Text(
               'Dashboard',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               'Welcome to TrackBit',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                children: [
-                  _DashboardTile(
-                    icon: Icons.point_of_sale,
-                    label: 'POS',
-                    color: AppColors.primary,
-                    onTap: () => context.go('/pos'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.inventory_2,
-                    label: 'Inventory',
-                    color: AppColors.success,
-                    onTap: () => context.go('/inventory'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.receipt_long,
-                    label: 'Sales',
-                    color: AppColors.accent,
-                    onTap: () => context.go('/sales'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.description,
-                    label: 'Invoices',
-                    color: AppColors.secondary,
-                    onTap: () => context.go('/invoicing'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.money_off,
-                    label: 'Expenses',
-                    color: AppColors.warning,
-                    onTap: () => context.go('/expenses'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.people,
-                    label: 'Customers',
-                    color: AppColors.primaryLight,
-                    onTap: () => context.go('/crm'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.badge,
-                    label: 'Employees',
-                    color: AppColors.info,
-                    onTap: () => context.go('/employees'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.admin_panel_settings,
-                    label: 'Roles',
-                    color: AppColors.error,
-                    onTap: () => context.go('/roles'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.assessment,
-                    label: 'Reports',
-                    color: AppColors.secondary,
-                    onTap: () => context.go('/reports'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.sync,
-                    label: 'Sync',
-                    color: AppColors.accent,
-                    onTap: () => context.go('/sync'),
-                  ),
-                  _DashboardTile(
-                    icon: Icons.settings,
-                    label: 'Settings',
-                    color: AppColors.textSecondary,
-                    onTap: () => context.go('/settings'),
-                  ),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final crossAxisCount = constraints.maxWidth > 600
+                      ? 4
+                      : constraints.maxWidth > 400
+                      ? 3
+                      : 2;
+                  return GridView.count(
+                    crossAxisCount: crossAxisCount,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    children: [
+                      _DashboardTile(
+                        icon: Icons.point_of_sale,
+                        label: 'POS',
+                        color: AppColors.primary,
+                        onTap: () => context.push('/pos'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.inventory_2,
+                        label: 'Inventory',
+                        color: AppColors.success,
+                        onTap: () => context.push('/inventory'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.receipt_long,
+                        label: 'Sales',
+                        color: AppColors.accent,
+                        onTap: () => context.push('/sales'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.description,
+                        label: 'Invoices',
+                        color: AppColors.secondary,
+                        onTap: () => context.push('/invoicing'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.money_off,
+                        label: 'Expenses',
+                        color: AppColors.warning,
+                        onTap: () => context.push('/expenses'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.people,
+                        label: 'Customers',
+                        color: AppColors.primaryLight,
+                        onTap: () => context.push('/crm'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.badge,
+                        label: 'Employees',
+                        color: AppColors.info,
+                        onTap: () => context.push('/employees'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.admin_panel_settings,
+                        label: 'Roles',
+                        color: AppColors.error,
+                        onTap: () => context.push('/roles'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.assessment,
+                        label: 'Reports',
+                        color: AppColors.secondary,
+                        onTap: () => context.push('/reports'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.sync,
+                        label: 'Sync',
+                        color: AppColors.accent,
+                        onTap: () => context.push('/sync'),
+                      ),
+                      _DashboardTile(
+                        icon: Icons.settings,
+                        label: 'Settings',
+                        color: AppColors.textHint,
+                        onTap: () => context.push('/settings'),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -155,7 +162,10 @@ class _DashboardTile extends StatelessWidget {
               Text(
                 label,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),

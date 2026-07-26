@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,35 +91,47 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
     if (_selectedCategoryId == null) return;
     final catRepo = ref.read(categoryRepositoryProvider);
     final categoriesResult = await catRepo.getAllCategories();
-    categoriesResult.when(success: (categories) {
-      final cat = categories.where((c) => c.id == _selectedCategoryId).firstOrNull;
-      if (cat != null) {
-        final catType = cat.type.name;
-        catRepo.getAttributesByCategoryType(catType).then((result) {
-          result.when(success: (attrs) {
-            _cachedAttributes = attrs;
-            for (final attr in attrs) {
-              _attributeControllers[attr.attributeKey] = TextEditingController();
-            }
-            _loadProductAttributeValues();
-            setState(() {});
-          }, error: (_) {});
-        });
-      }
-    }, error: (_) {});
+    categoriesResult.when(
+      success: (categories) {
+        final cat = categories
+            .where((c) => c.id == _selectedCategoryId)
+            .firstOrNull;
+        if (cat != null) {
+          final catType = cat.type.name;
+          catRepo.getAttributesByCategoryType(catType).then((result) {
+            result.when(
+              success: (attrs) {
+                _cachedAttributes = attrs;
+                for (final attr in attrs) {
+                  _attributeControllers[attr.attributeKey] =
+                      TextEditingController();
+                }
+                _loadProductAttributeValues();
+                setState(() {});
+              },
+              error: (_) {},
+            );
+          });
+        }
+      },
+      error: (_) {},
+    );
   }
 
   Future<void> _loadProductAttributeValues() async {
     if (widget.productId == null) return;
     final repo = ref.read(productRepositoryProvider);
     final result = await repo.getProductAttributes(widget.productId!);
-    result.when(success: (attrs) {
-      for (final attr in attrs) {
-        _attributeControllers[attr.attributeKey]?.text = attr.attributeValue;
-        _attributeSelectValues[attr.attributeKey] = attr.attributeValue;
-      }
-      setState(() {});
-    }, error: (_) {});
+    result.when(
+      success: (attrs) {
+        for (final attr in attrs) {
+          _attributeControllers[attr.attributeKey]?.text = attr.attributeValue;
+          _attributeSelectValues[attr.attributeKey] = attr.attributeValue;
+        }
+        setState(() {});
+      },
+      error: (_) {},
+    );
   }
 
   @override
@@ -141,9 +154,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Product' : 'Add Product'),
-      ),
+      appBar: AppBar(title: Text(_isEditing ? 'Edit Product' : 'Add Product')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -155,8 +166,11 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                   children: [
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Product Name'),
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
+                      decoration: const InputDecoration(
+                        labelText: 'Product Name',
+                      ),
+                      validator: (v) =>
+                          v == null || v.trim().isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -165,14 +179,18 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                           child: TextFormField(
                             controller: _skuController,
                             decoration: const InputDecoration(labelText: 'SKU'),
-                            validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
+                            validator: (v) => v == null || v.trim().isEmpty
+                                ? 'Required'
+                                : null,
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: TextFormField(
                             controller: _barcodeController,
-                            decoration: const InputDecoration(labelText: 'Barcode'),
+                            decoration: const InputDecoration(
+                              labelText: 'Barcode',
+                            ),
                           ),
                         ),
                       ],
@@ -181,11 +199,17 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                     categoriesAsync.when(
                       data: (categories) => DropdownButtonFormField<String>(
                         initialValue: _selectedCategoryId,
-                        decoration: const InputDecoration(labelText: 'Category'),
-                        items: categories.map((c) => DropdownMenuItem(
-                          value: c.id,
-                          child: Text(c.name),
-                        )).toList(),
+                        decoration: const InputDecoration(
+                          labelText: 'Category',
+                        ),
+                        items: categories
+                            .map(
+                              (c) => DropdownMenuItem(
+                                value: c.id,
+                                child: Text(c.name),
+                              ),
+                            )
+                            .toList(),
                         onChanged: (v) {
                           setState(() => _selectedCategoryId = v);
                           if (!_isEditing) _generateSku();
@@ -199,7 +223,9 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _descriptionController,
-                      decoration: const InputDecoration(labelText: 'Description'),
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                      ),
                       maxLines: 3,
                     ),
                     const SizedBox(height: 16),
@@ -208,18 +234,34 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _priceController,
-                            decoration: const InputDecoration(labelText: 'Selling Price'),
+                            decoration: const InputDecoration(
+                              labelText: 'Selling Price',
+                            ),
                             keyboardType: TextInputType.number,
-                            validator: (v) => v == null || double.tryParse(v) == null ? 'Invalid price' : null,
+                            validator: (v) {
+                              if (v == null || double.tryParse(v) == null)
+                                return 'Invalid price';
+                              if (double.parse(v) < 0)
+                                return 'Price cannot be negative';
+                              return null;
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: TextFormField(
                             controller: _costController,
-                            decoration: const InputDecoration(labelText: 'Cost'),
+                            decoration: const InputDecoration(
+                              labelText: 'Cost',
+                            ),
                             keyboardType: TextInputType.number,
-                            validator: (v) => v == null || double.tryParse(v) == null ? 'Invalid cost' : null,
+                            validator: (v) {
+                              if (v == null || double.tryParse(v) == null)
+                                return 'Invalid cost';
+                              if (double.parse(v) < 0)
+                                return 'Cost cannot be negative';
+                              return null;
+                            },
                           ),
                         ),
                       ],
@@ -230,7 +272,9 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _minStockController,
-                            decoration: const InputDecoration(labelText: 'Min Stock Alert'),
+                            decoration: const InputDecoration(
+                              labelText: 'Min Stock Alert',
+                            ),
                             keyboardType: TextInputType.number,
                           ),
                         ),
@@ -238,18 +282,42 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                         Expanded(
                           child: DropdownButtonFormField<String>(
                             initialValue: _unit,
-                            decoration: const InputDecoration(labelText: 'Unit'),
+                            decoration: const InputDecoration(
+                              labelText: 'Unit',
+                            ),
                             items: const [
-                              DropdownMenuItem(value: 'Piece', child: Text('Piece')),
+                              DropdownMenuItem(
+                                value: 'Piece',
+                                child: Text('Piece'),
+                              ),
                               DropdownMenuItem(value: 'Kg', child: Text('Kg')),
-                              DropdownMenuItem(value: 'Gram', child: Text('Gram')),
-                              DropdownMenuItem(value: 'Liter', child: Text('Liter')),
-                              DropdownMenuItem(value: 'Pair', child: Text('Pair')),
-                              DropdownMenuItem(value: 'Set', child: Text('Set')),
-                              DropdownMenuItem(value: 'Copy', child: Text('Copy')),
-                              DropdownMenuItem(value: 'Unit', child: Text('Unit')),
+                              DropdownMenuItem(
+                                value: 'Gram',
+                                child: Text('Gram'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Liter',
+                                child: Text('Liter'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Pair',
+                                child: Text('Pair'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Set',
+                                child: Text('Set'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Copy',
+                                child: Text('Copy'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Unit',
+                                child: Text('Unit'),
+                              ),
                             ],
-                            onChanged: (v) => setState(() => _unit = v ?? 'Piece'),
+                            onChanged: (v) =>
+                                setState(() => _unit = v ?? 'Piece'),
                           ),
                         ),
                       ],
@@ -260,32 +328,59 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                       value: _isActive,
                       onChanged: (v) => setState(() => _isActive = v),
                     ),
-                    if (_cachedAttributes != null && _cachedAttributes!.isNotEmpty) ...[
+                    if (_cachedAttributes != null &&
+                        _cachedAttributes!.isNotEmpty) ...[
                       const SizedBox(height: 24),
-                      Text('Dynamic Attributes', style: Theme.of(context).textTheme.titleMedium),
+                      Text(
+                        'Dynamic Attributes',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 8),
-                      ..._cachedAttributes!.map((attr) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: attr.attributeType == 'select'
-                            ? DropdownButtonFormField<String>(
-                                initialValue: _attributeSelectValues[attr.attributeKey],
-                                decoration: InputDecoration(labelText: attr.attributeLabel),
-                                items: _parseOptions(attr.optionsJson).map((o) => DropdownMenuItem(
-                                  value: o,
-                                  child: Text(o),
-                                )).toList(),
-                                onChanged: (v) => _attributeSelectValues[attr.attributeKey] = v ?? '',
-                                validator: attr.isRequired ? (v) => v == null || v.isEmpty ? 'Required' : null : null,
-                              )
-                            : TextFormField(
-                                controller: _attributeControllers[attr.attributeKey],
-                                decoration: InputDecoration(
-                                  labelText: attr.attributeLabel,
+                      ..._cachedAttributes!.map(
+                        (attr) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: attr.attributeType == 'select'
+                              ? DropdownButtonFormField<String>(
+                                  initialValue:
+                                      _attributeSelectValues[attr.attributeKey],
+                                  decoration: InputDecoration(
+                                    labelText: attr.attributeLabel,
+                                  ),
+                                  items: _parseOptions(attr.optionsJson)
+                                      .map(
+                                        (o) => DropdownMenuItem(
+                                          value: o,
+                                          child: Text(o),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (v) =>
+                                      _attributeSelectValues[attr
+                                              .attributeKey] =
+                                          v ?? '',
+                                  validator: attr.isRequired
+                                      ? (v) => v == null || v.isEmpty
+                                            ? 'Required'
+                                            : null
+                                      : null,
+                                )
+                              : TextFormField(
+                                  controller:
+                                      _attributeControllers[attr.attributeKey],
+                                  decoration: InputDecoration(
+                                    labelText: attr.attributeLabel,
+                                  ),
+                                  keyboardType: attr.attributeType == 'number'
+                                      ? TextInputType.number
+                                      : TextInputType.text,
+                                  validator: attr.isRequired
+                                      ? (v) => v == null || v.trim().isEmpty
+                                            ? 'Required'
+                                            : null
+                                      : null,
                                 ),
-                                keyboardType: attr.attributeType == 'number' ? TextInputType.number : TextInputType.text,
-                                validator: attr.isRequired ? (v) => v == null || v.trim().isEmpty ? 'Required' : null : null,
-                              ),
-                      )),
+                        ),
+                      ),
                     ],
                     const SizedBox(height: 16),
                     Row(
@@ -293,7 +388,9 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                         Expanded(
                           child: OutlinedButton.icon(
                             icon: const Icon(Icons.image),
-                            label: Text(_imagePath != null ? 'Change Image' : 'Add Image'),
+                            label: Text(
+                              _imagePath != null ? 'Change Image' : 'Add Image',
+                            ),
                             onPressed: _pickImage,
                           ),
                         ),
@@ -310,7 +407,10 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: const Icon(Icons.clear, color: AppColors.error),
+                            icon: const Icon(
+                              Icons.clear,
+                              color: AppColors.error,
+                            ),
                             onPressed: () => setState(() => _imagePath = null),
                           ),
                         ],
@@ -319,7 +419,9 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: _saveProduct,
-                      child: Text(_isEditing ? 'Update Product' : 'Create Product'),
+                      child: Text(
+                        _isEditing ? 'Update Product' : 'Create Product',
+                      ),
                     ),
                   ],
                 ),
@@ -330,7 +432,10 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1024);
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+    );
     if (picked != null) {
       setState(() => _imagePath = picked.path);
     }
@@ -339,8 +444,14 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   List<String> _parseOptions(String? json) {
     if (json == null || json.isEmpty) return [];
     try {
-      final stripped = json.replaceAll('[', '').replaceAll(']', '').replaceAll('"', '');
-      return stripped.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      final decoded = jsonDecode(json);
+      if (decoded is List) {
+        return decoded
+            .map((e) => e.toString().trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+      return [];
     } catch (_) {
       return [];
     }
@@ -353,9 +464,13 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       id: _isEditing ? widget.productId! : _uuid.v4(),
       sku: _skuController.text.trim(),
       name: _nameController.text.trim(),
-      description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
       categoryId: _selectedCategoryId!,
-      barcode: _barcodeController.text.trim().isEmpty ? null : _barcodeController.text.trim(),
+      barcode: _barcodeController.text.trim().isEmpty
+          ? null
+          : _barcodeController.text.trim(),
       unit: _unit,
       price: double.parse(_priceController.text.trim()),
       cost: double.parse(_costController.text.trim()),
@@ -366,12 +481,20 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       updatedAt: DateTime.now(),
     );
 
-    final attributes = _cachedAttributes?.map((attr) => ProductAttribute(
-      id: _uuid.v4(),
-      productId: product.id,
-      attributeKey: attr.attributeKey,
-      attributeValue: _attributeSelectValues[attr.attributeKey] ?? _attributeControllers[attr.attributeKey]?.text ?? '',
-    )).where((a) => a.attributeValue.isNotEmpty).toList();
+    final attributes = _cachedAttributes
+        ?.map(
+          (attr) => ProductAttribute(
+            id: _uuid.v4(),
+            productId: product.id,
+            attributeKey: attr.attributeKey,
+            attributeValue:
+                _attributeSelectValues[attr.attributeKey] ??
+                _attributeControllers[attr.attributeKey]?.text ??
+                '',
+          ),
+        )
+        .where((a) => a.attributeValue.isNotEmpty)
+        .toList();
 
     final repo = ref.read(productRepositoryProvider);
     final result = _isEditing
@@ -383,18 +506,18 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
         if (mounted) {
           ref.invalidate(productsProvider);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(_isEditing ? 'Product updated' : 'Product created')),
+            SnackBar(
+              content: Text(_isEditing ? 'Product updated' : 'Product created'),
+            ),
           );
           context.pop();
         }
       },
       error: (failure) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${failure.message}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${failure.message}')));
       },
     );
   }
 }
-
-

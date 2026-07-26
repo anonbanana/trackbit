@@ -58,10 +58,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           userResult.when(
             success: (user) {
               if (user != null) {
-                state = AuthState(
-                  status: AuthStatus.authenticated,
-                  user: user,
-                );
+                state = AuthState(status: AuthStatus.authenticated, user: user);
               } else {
                 state = const AuthState(status: AuthStatus.unauthenticated);
               }
@@ -91,10 +88,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final result = await _authRepository.login(username, password);
     result.when(
       success: (user) {
-        state = AuthState(
-          status: AuthStatus.authenticated,
-          user: user,
-        );
+        state = AuthState(status: AuthStatus.authenticated, user: user);
       },
       error: (failure) {
         state = AuthState(
@@ -120,10 +114,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
     result.when(
       success: (user) {
-        state = AuthState(
-          status: AuthStatus.authenticated,
-          user: user,
-        );
+        state = AuthState(status: AuthStatus.authenticated, user: user);
       },
       error: (failure) {
         state = AuthState(
@@ -140,7 +131,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void clearError() {
-    state = state.copyWith(errorMessage: null, status: AuthStatus.unauthenticated);
+    state = state.copyWith(
+      errorMessage: null,
+      status: AuthStatus.unauthenticated,
+    );
   }
 }
 

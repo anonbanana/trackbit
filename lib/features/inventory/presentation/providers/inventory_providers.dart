@@ -23,7 +23,9 @@ final productDataSourceProvider = Provider<ProductLocalDataSource>((ref) {
   return ProductLocalDataSource(ref.watch(db.databaseProvider));
 });
 
-final stockMovementDataSourceProvider = Provider<StockMovementLocalDataSource>((ref) {
+final stockMovementDataSourceProvider = Provider<StockMovementLocalDataSource>((
+  ref,
+) {
   return StockMovementLocalDataSource(ref.watch(db.databaseProvider));
 });
 
@@ -38,7 +40,9 @@ final productRepositoryProvider = Provider<ProductRepository>((ref) {
   );
 });
 
-final stockMovementRepositoryProvider = Provider<StockMovementRepository>((ref) {
+final stockMovementRepositoryProvider = Provider<StockMovementRepository>((
+  ref,
+) {
   return StockMovementRepositoryImpl(
     ref.watch(stockMovementDataSourceProvider),
     ref.watch(productDataSourceProvider),
@@ -53,15 +57,23 @@ final categoriesProvider = FutureProvider<List<domain.Category>>((ref) async {
   );
 });
 
-final categoryAttributesProvider = FutureProvider.family<List<domain_attr.CategoryAttribute>, String>((ref, categoryType) async {
-  final result = await ref.watch(categoryRepositoryProvider).getAttributesByCategoryType(categoryType);
-  return result.when(
-    success: (data) => data,
-    error: (failure) => throw Exception(failure.message),
-  );
-});
+final categoryAttributesProvider =
+    FutureProvider.family<List<domain_attr.CategoryAttribute>, String>((
+      ref,
+      categoryType,
+    ) async {
+      final result = await ref
+          .watch(categoryRepositoryProvider)
+          .getAttributesByCategoryType(categoryType);
+      return result.when(
+        success: (data) => data,
+        error: (failure) => throw Exception(failure.message),
+      );
+    });
 
-final productsProvider = FutureProvider<List<domain_product.Product>>((ref) async {
+final productsProvider = FutureProvider<List<domain_product.Product>>((
+  ref,
+) async {
   final result = await ref.watch(productRepositoryProvider).getAllProducts();
   return result.when(
     success: (data) => data,
@@ -69,57 +81,91 @@ final productsProvider = FutureProvider<List<domain_product.Product>>((ref) asyn
   );
 });
 
-final productsByCategoryProvider = FutureProvider.family<List<domain_product.Product>, String>((ref, categoryId) async {
-  final result = await ref.watch(productRepositoryProvider).getAllProducts(categoryId: categoryId);
+final productsByCategoryProvider =
+    FutureProvider.family<List<domain_product.Product>, String>((
+      ref,
+      categoryId,
+    ) async {
+      final result = await ref
+          .watch(productRepositoryProvider)
+          .getAllProducts(categoryId: categoryId);
+      return result.when(
+        success: (data) => data,
+        error: (failure) => throw Exception(failure.message),
+      );
+    });
+
+final searchedProductsProvider =
+    FutureProvider.family<List<domain_product.Product>, String>((
+      ref,
+      query,
+    ) async {
+      if (query.isEmpty) {
+        final result = await ref
+            .watch(productRepositoryProvider)
+            .getAllProducts();
+        return result.when(
+          success: (data) => data,
+          error: (failure) => throw Exception(failure.message),
+        );
+      }
+      final result = await ref
+          .watch(productRepositoryProvider)
+          .getAllProducts(searchQuery: query);
+      return result.when(
+        success: (data) => data,
+        error: (failure) => throw Exception(failure.message),
+      );
+    });
+
+final productAttributesProvider =
+    FutureProvider.family<List<domain_pa.ProductAttribute>, String>((
+      ref,
+      productId,
+    ) async {
+      final result = await ref
+          .watch(productRepositoryProvider)
+          .getProductAttributes(productId);
+      return result.when(
+        success: (data) => data,
+        error: (failure) => throw Exception(failure.message),
+      );
+    });
+
+final lowStockProductsProvider = FutureProvider<List<domain_product.Product>>((
+  ref,
+) async {
+  final result = await ref
+      .watch(productRepositoryProvider)
+      .getLowStockProducts();
   return result.when(
     success: (data) => data,
     error: (failure) => throw Exception(failure.message),
   );
 });
 
-final searchedProductsProvider = FutureProvider.family<List<domain_product.Product>, String>((ref, query) async {
-  if (query.isEmpty) {
-    final result = await ref.watch(productRepositoryProvider).getAllProducts();
-    return result.when(
-      success: (data) => data,
-      error: (failure) => throw Exception(failure.message),
-    );
-  }
-  final result = await ref.watch(productRepositoryProvider).getAllProducts(searchQuery: query);
+final stockMovementsProvider = FutureProvider<List<domain_sm.StockMovement>>((
+  ref,
+) async {
+  final result = await ref
+      .watch(stockMovementRepositoryProvider)
+      .getAllMovements();
   return result.when(
     success: (data) => data,
     error: (failure) => throw Exception(failure.message),
   );
 });
 
-final productAttributesProvider = FutureProvider.family<List<domain_pa.ProductAttribute>, String>((ref, productId) async {
-  final result = await ref.watch(productRepositoryProvider).getProductAttributes(productId);
-  return result.when(
-    success: (data) => data,
-    error: (failure) => throw Exception(failure.message),
-  );
-});
-
-final lowStockProductsProvider = FutureProvider<List<domain_product.Product>>((ref) async {
-  final result = await ref.watch(productRepositoryProvider).getLowStockProducts();
-  return result.when(
-    success: (data) => data,
-    error: (failure) => throw Exception(failure.message),
-  );
-});
-
-final stockMovementsProvider = FutureProvider<List<domain_sm.StockMovement>>((ref) async {
-  final result = await ref.watch(stockMovementRepositoryProvider).getAllMovements();
-  return result.when(
-    success: (data) => data,
-    error: (failure) => throw Exception(failure.message),
-  );
-});
-
-final stockMovementsByProductProvider = FutureProvider.family<List<domain_sm.StockMovement>, String>((ref, productId) async {
-  final result = await ref.watch(stockMovementRepositoryProvider).getMovementsByProduct(productId);
-  return result.when(
-    success: (data) => data,
-    error: (failure) => throw Exception(failure.message),
-  );
-});
+final stockMovementsByProductProvider =
+    FutureProvider.family<List<domain_sm.StockMovement>, String>((
+      ref,
+      productId,
+    ) async {
+      final result = await ref
+          .watch(stockMovementRepositoryProvider)
+          .getMovementsByProduct(productId);
+      return result.when(
+        success: (data) => data,
+        error: (failure) => throw Exception(failure.message),
+      );
+    });

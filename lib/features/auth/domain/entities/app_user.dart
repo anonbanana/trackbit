@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 class AppUser extends Equatable {
   final String id;
   final String username;
-  final String passwordHash;
   final String fullName;
   final String roleId;
   final bool isActive;
@@ -13,7 +12,6 @@ class AppUser extends Equatable {
   const AppUser({
     required this.id,
     required this.username,
-    required this.passwordHash,
     required this.fullName,
     required this.roleId,
     required this.isActive,
@@ -24,7 +22,6 @@ class AppUser extends Equatable {
   AppUser copyWith({
     String? id,
     String? username,
-    String? passwordHash,
     String? fullName,
     String? roleId,
     bool? isActive,
@@ -34,7 +31,6 @@ class AppUser extends Equatable {
     return AppUser(
       id: id ?? this.id,
       username: username ?? this.username,
-      passwordHash: passwordHash ?? this.passwordHash,
       fullName: fullName ?? this.fullName,
       roleId: roleId ?? this.roleId,
       isActive: isActive ?? this.isActive,

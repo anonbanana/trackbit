@@ -33,15 +33,17 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   Future<Result<void>> addEntry(SyncEntry entry) async {
     try {
-      await _dataSource.insertEntry(db.SyncQueueCompanion(
-        entityTable: Value(entry.entityTable),
-        recordId: Value(entry.recordId),
-        operation: Value(entry.operation),
-        payloadJson: Value(entry.payloadJson ?? ''),
-        status: const Value('PENDING'),
-        deviceId: Value(entry.deviceId),
-        createdAt: Value(entry.createdAt),
-      ));
+      await _dataSource.insertEntry(
+        db.SyncQueueCompanion(
+          entityTable: Value(entry.entityTable),
+          recordId: Value(entry.recordId),
+          operation: Value(entry.operation),
+          payloadJson: Value(entry.payloadJson ?? ''),
+          status: const Value('PENDING'),
+          deviceId: Value(entry.deviceId),
+          createdAt: Value(entry.createdAt),
+        ),
+      );
       return const Success(null);
     } catch (e) {
       return Error(DatabaseFailure('Failed to add sync entry: $e'));

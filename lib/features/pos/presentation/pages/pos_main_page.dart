@@ -84,8 +84,10 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                     data: (products) {
                       if (_searchQuery.isEmpty) {
                         return const Center(
-                          child: Text('Search for products to start selling',
-                              style: TextStyle(color: AppColors.textHint)),
+                          child: Text(
+                            'Search for products to start selling',
+                            style: TextStyle(color: AppColors.textHint),
+                          ),
                         );
                       }
                       if (products.isEmpty) {
@@ -93,21 +95,25 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                       }
                       return GridView.builder(
                         padding: const EdgeInsets.all(8),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.1,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 1.1,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                            ),
                         itemCount: products.length,
                         itemBuilder: (context, index) {
                           final product = products[index];
-                          final stockQty = (product['stockQty'] as num).toDouble();
+                          final stockQty = (product['stockQty'] as num)
+                              .toDouble();
                           final isOutOfStock = stockQty <= 0;
                           return Card(
                             color: isOutOfStock ? Colors.grey.shade100 : null,
                             child: InkWell(
-                              onTap: isOutOfStock ? null : () => _addToCart(product),
+                              onTap: isOutOfStock
+                                  ? null
+                                  : () => _addToCart(product),
                               borderRadius: BorderRadius.circular(12),
                               child: Padding(
                                 padding: const EdgeInsets.all(8),
@@ -115,9 +121,13 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
-                                      isOutOfStock ? Icons.inventory : Icons.shopping_bag,
+                                      isOutOfStock
+                                          ? Icons.inventory
+                                          : Icons.shopping_bag,
                                       size: 32,
-                                      color: isOutOfStock ? AppColors.textHint : AppColors.primary,
+                                      color: isOutOfStock
+                                          ? AppColors.textHint
+                                          : AppColors.primary,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
@@ -125,21 +135,31 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                                       textAlign: TextAlign.center,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      NumberFormat.currency(symbol: '\$', decimalDigits: 2)
-                                          .format(product['price']),
-                                      style: TextStyle(
+                                      NumberFormat.currency(
+                                        symbol: '\$',
+                                        decimalDigits: 2,
+                                      ).format(product['price']),
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         color: AppColors.success,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     if (isOutOfStock)
-                                      const Text('Out of Stock',
-                                          style: TextStyle(fontSize: 10, color: AppColors.error)),
+                                      const Text(
+                                        'Out of Stock',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: AppColors.error,
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -148,14 +168,15 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                         },
                       );
                     },
-                    loading: () => const Center(child: CircularProgressIndicator()),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
                     error: (e, _) => Center(child: Text('Error: $e')),
                   ),
                 ),
                 Expanded(
                   flex: 2,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColors.surfaceVariant,
                       border: Border(left: BorderSide(color: AppColors.border)),
                     ),
@@ -163,15 +184,22 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(12),
-                          child: Text('Cart (${cart.itemCount})',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          child: Text(
+                            'Cart (${cart.itemCount})',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                         const Divider(height: 1),
                         Expanded(
                           child: cart.items.isEmpty
                               ? const Center(
-                                  child: Text('Cart is empty',
-                                      style: TextStyle(color: AppColors.textHint)),
+                                  child: Text(
+                                    'Cart is empty',
+                                    style: TextStyle(color: AppColors.textHint),
+                                  ),
                                 )
                               : ListView.builder(
                                   itemCount: cart.items.length,
@@ -179,11 +207,20 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                                     final item = cart.items[index];
                                     return _CartItemTile(
                                       item: item,
-                                      onIncrement: () => ref.read(cartProvider.notifier)
-                                          .updateQuantity(item.productId, item.quantity + 1),
-                                      onDecrement: () => ref.read(cartProvider.notifier)
-                                          .updateQuantity(item.productId, item.quantity - 1),
-                                      onRemove: () => ref.read(cartProvider.notifier)
+                                      onIncrement: () => ref
+                                          .read(cartProvider.notifier)
+                                          .updateQuantity(
+                                            item.productId,
+                                            item.quantity + 1,
+                                          ),
+                                      onDecrement: () => ref
+                                          .read(cartProvider.notifier)
+                                          .updateQuantity(
+                                            item.productId,
+                                            item.quantity - 1,
+                                          ),
+                                      onRemove: () => ref
+                                          .read(cartProvider.notifier)
                                           .removeItem(item.productId),
                                     );
                                   },
@@ -195,16 +232,30 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              _SummaryRow(label: 'Subtotal', value: cart.subtotal),
+                              _SummaryRow(
+                                label: 'Subtotal',
+                                value: cart.subtotal,
+                              ),
                               if (cart.discount > 0)
-                                _SummaryRow(label: 'Discount (${cart.discount.toStringAsFixed(0)}%)',
-                                    value: -cart.discountAmount, color: AppColors.error),
+                                _SummaryRow(
+                                  label:
+                                      'Discount (${cart.discount.toStringAsFixed(0)}%)',
+                                  value: -cart.discountAmount,
+                                  color: AppColors.error,
+                                ),
                               if (cart.taxRate > 0)
-                                _SummaryRow(label: 'Tax (${cart.taxRate.toStringAsFixed(0)}%)',
-                                    value: cart.taxAmount),
+                                _SummaryRow(
+                                  label:
+                                      'Tax (${cart.taxRate.toStringAsFixed(0)}%)',
+                                  value: cart.taxAmount,
+                                ),
                               const Divider(height: 8),
-                              _SummaryRow(label: 'Total', value: cart.total,
-                                  bold: true, fontSize: 18),
+                              _SummaryRow(
+                                label: 'Total',
+                                value: cart.total,
+                                bold: true,
+                                fontSize: 18,
+                              ),
                               const SizedBox(height: 8),
                               ElevatedButton(
                                 onPressed: cart.items.isEmpty
@@ -229,15 +280,19 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
 
   void _addToCart(Map<String, dynamic> product) {
     final qty = double.tryParse(_quantityController.text) ?? 1;
-    ref.read(cartProvider.notifier).addItem(CartItem(
-      productId: product['id'] as String,
-      productName: product['name'] as String,
-      sku: product['sku'] as String,
-      unitPrice: (product['price'] as num).toDouble(),
-      quantity: qty,
-      unit: product['unit'] as String? ?? 'Piece',
-      barcode: product['barcode'] as String?,
-    ));
+    ref
+        .read(cartProvider.notifier)
+        .addItem(
+          CartItem(
+            productId: product['id'] as String,
+            productName: product['name'] as String,
+            sku: product['sku'] as String,
+            unitPrice: (product['price'] as num).toDouble(),
+            quantity: qty,
+            unit: product['unit'] as String? ?? 'Piece',
+            barcode: product['barcode'] as String?,
+          ),
+        );
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Added ${product['name']}'),
@@ -272,16 +327,19 @@ class _PosMainPageState extends ConsumerState<PosMainPage> {
                     );
                   }
                 },
-                error: (f) => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${f.message}')),
-                ),
+                error: (f) => ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
               );
             }
             if (ctx.mounted) Navigator.pop(ctx);
           },
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
         ],
       ),
     );
@@ -313,9 +371,15 @@ class _CartItemTile extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(item.productName,
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    item.productName,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, size: 16),
@@ -337,8 +401,10 @@ class _CartItemTile extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
-                    Text('${item.quantity.toStringAsFixed(0)}',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      item.quantity.toStringAsFixed(0),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline, size: 18),
                       onPressed: onIncrement,
@@ -348,8 +414,14 @@ class _CartItemTile extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(item.subtotal),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  NumberFormat.currency(
+                    symbol: '\$',
+                    decimalDigits: 2,
+                  ).format(item.subtotal),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -382,7 +454,13 @@ class _SummaryRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: fontSize, fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
           Text(
             NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(value),
             style: TextStyle(

@@ -22,7 +22,9 @@ final rolesProvider = FutureProvider<List<domain.Role>>((ref) async {
   );
 });
 
-final permissionsProvider = FutureProvider<List<domain.Permission>>((ref) async {
+final permissionsProvider = FutureProvider<List<domain.Permission>>((
+  ref,
+) async {
   final result = await ref.watch(roleRepositoryProvider).getAllPermissions();
   return result.when(
     success: (permissions) => permissions,
@@ -30,8 +32,13 @@ final permissionsProvider = FutureProvider<List<domain.Permission>>((ref) async 
   );
 });
 
-final rolePermissionIdsProvider = FutureProvider.family<List<String>, String>((ref, roleId) async {
-  final result = await ref.watch(roleRepositoryProvider).getRolePermissionIds(roleId);
+final rolePermissionIdsProvider = FutureProvider.family<List<String>, String>((
+  ref,
+  roleId,
+) async {
+  final result = await ref
+      .watch(roleRepositoryProvider)
+      .getRolePermissionIds(roleId);
   return result.when(
     success: (ids) => ids,
     error: (failure) => throw Exception(failure.message),
@@ -39,7 +46,9 @@ final rolePermissionIdsProvider = FutureProvider.family<List<String>, String>((r
 });
 
 final initializeDefaultRolesProvider = FutureProvider<void>((ref) async {
-  final result = await ref.watch(roleRepositoryProvider).initializeDefaultRoles();
+  final result = await ref
+      .watch(roleRepositoryProvider)
+      .initializeDefaultRoles();
   result.when(
     success: (_) {},
     error: (failure) => throw Exception(failure.message),

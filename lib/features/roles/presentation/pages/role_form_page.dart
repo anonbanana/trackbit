@@ -75,123 +75,168 @@ class _RoleFormPageState extends ConsumerState<RoleFormPage> {
     final permissionsAsync = ref.watch(permissionsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Role' : 'Add Role'),
-      ),
+      appBar: AppBar(title: Text(_isEditing ? 'Edit Role' : 'Add Role')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _labelController,
-                decoration: const InputDecoration(labelText: 'Display Name'),
-                validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'System Name'),
-                validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 16),
-              rolesAsync.when(
-                data: (roles) => DropdownButtonFormField<String>(
-                  initialValue: _parentRoleId,
-                  decoration: const InputDecoration(labelText: 'Parent Role'),
-                  items: [
-                    const DropdownMenuItem<String>(value: null, child: Text('None (Top Level)')),
-                    ...roles.where((r) => r.id != widget.roleId).map((r) =>
-                        DropdownMenuItem<String>(value: r.id, child: Text(r.label))),
-                  ],
-                  onChanged: (v) => setState(() => _parentRoleId = v),
-                ),
-                loading: () => const SizedBox(),
-                error: (_, __) => const SizedBox(),
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<int>(
-                initialValue: _level,
-                decoration: const InputDecoration(labelText: 'Hierarchy Level'),
-                items: const [
-                  DropdownMenuItem(value: 0, child: Text('0 - System')),
-                  DropdownMenuItem(value: 1, child: Text('1 - Boss')),
-                  DropdownMenuItem(value: 2, child: Text('2 - Manager')),
-                  DropdownMenuItem(value: 3, child: Text('3 - Employee')),
-                ],
-                onChanged: (v) => setState(() => _level = v ?? 3),
-              ),
-              const SizedBox(height: 24),
-              Text('Permissions', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
-              permissionsAsync.when(
-                data: (permissions) {
-                  final grouped = <String, List<domain.Permission>>{};
-                  for (final p in permissions) {
-                    grouped.putIfAbsent(p.groupName, () => []).add(p);
-                  }
-                  return Column(
-                    children: grouped.entries.map((entry) {
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
-                                child: Text(
-                                  entry.key,
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _labelController,
+                      decoration: const InputDecoration(
+                        labelText: 'Display Name',
+                      ),
+                      validator: (v) =>
+                          v == null || v.trim().isEmpty ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'System Name',
+                      ),
+                      validator: (v) =>
+                          v == null || v.trim().isEmpty ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                      ),
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 16),
+                    rolesAsync.when(
+                      data: (roles) => DropdownButtonFormField<String>(
+                        initialValue: _parentRoleId,
+                        decoration: const InputDecoration(
+                          labelText: 'Parent Role',
+                        ),
+                        items: [
+                          const DropdownMenuItem<String>(
+                            value: null,
+                            child: Text('None (Top Level)'),
+                          ),
+                          ...roles
+                              .where((r) => r.id != widget.roleId)
+                              .map(
+                                (r) => DropdownMenuItem<String>(
+                                  value: r.id,
+                                  child: Text(r.label),
                                 ),
                               ),
-                              ...entry.value.map((perm) => CheckboxListTile(
-                                dense: true,
-                                title: Text(perm.label, style: const TextStyle(fontSize: 14)),
-                                subtitle: perm.description != null
-                                    ? Text(perm.description!, style: const TextStyle(fontSize: 11))
-                                    : null,
-                                value: _selectedPermissionIds.contains(perm.id),
-                                onChanged: (checked) {
-                                  setState(() {
-                                    if (checked == true) {
-                                      _selectedPermissionIds.add(perm.id);
-                                    } else {
-                                      _selectedPermissionIds.remove(perm.id);
-                                    }
-                                  });
-                                },
-                              )),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('Error: $e'),
+                        ],
+                        onChanged: (v) => setState(() => _parentRoleId = v),
+                      ),
+                      loading: () => const SizedBox(),
+                      error: (_, __) => const SizedBox(),
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<int>(
+                      initialValue: _level,
+                      decoration: const InputDecoration(
+                        labelText: 'Hierarchy Level',
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 0, child: Text('0 - System')),
+                        DropdownMenuItem(value: 1, child: Text('1 - Boss')),
+                        DropdownMenuItem(value: 2, child: Text('2 - Manager')),
+                        DropdownMenuItem(value: 3, child: Text('3 - Employee')),
+                      ],
+                      onChanged: (v) => setState(() => _level = v ?? 3),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Permissions',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    permissionsAsync.when(
+                      data: (permissions) {
+                        final grouped = <String, List<domain.Permission>>{};
+                        for (final p in permissions) {
+                          grouped.putIfAbsent(p.groupName, () => []).add(p);
+                        }
+                        return Column(
+                          children: grouped.entries.map((entry) {
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 8,
+                                        top: 4,
+                                        bottom: 4,
+                                      ),
+                                      child: Text(
+                                        entry.key,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    ...entry.value.map(
+                                      (perm) => CheckboxListTile(
+                                        dense: true,
+                                        title: Text(
+                                          perm.label,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                        subtitle: perm.description != null
+                                            ? Text(
+                                                perm.description!,
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              )
+                                            : null,
+                                        value: _selectedPermissionIds.contains(
+                                          perm.id,
+                                        ),
+                                        onChanged: (checked) {
+                                          setState(() {
+                                            if (checked == true) {
+                                              _selectedPermissionIds.add(
+                                                perm.id,
+                                              );
+                                            } else {
+                                              _selectedPermissionIds.remove(
+                                                perm.id,
+                                              );
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      },
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (e, _) => Text('Error: $e'),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: _saveRole,
+                      child: Text(_isEditing ? 'Update Role' : 'Create Role'),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _saveRole,
-                child: Text(_isEditing ? 'Update Role' : 'Create Role'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -220,18 +265,24 @@ class _RoleFormPageState extends ConsumerState<RoleFormPage> {
 
     result.when(
       success: (_) async {
-        await repository.assignPermissionsToRole(role.id, _selectedPermissionIds);
+        await repository.assignPermissionsToRole(
+          role.id,
+          _selectedPermissionIds,
+        );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(_isEditing ? 'Role updated' : 'Role created')),
+            SnackBar(
+              content: Text(_isEditing ? 'Role updated' : 'Role created'),
+            ),
           );
           context.pop();
+          ref.invalidate(rolesProvider);
         }
       },
       error: (failure) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${failure.message}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${failure.message}')));
       },
     );
   }

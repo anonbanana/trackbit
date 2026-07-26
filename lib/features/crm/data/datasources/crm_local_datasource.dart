@@ -16,9 +16,9 @@ class CrmLocalDataSource {
   }
 
   Future<db.Customer?> getCustomerById(String id) async {
-    return await (_database.select(_database.customers)
-      ..where((t) => t.id.equals(id))
-    ).getSingleOrNull();
+    return await (_database.select(
+      _database.customers,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   Future<void> insertCustomer(db.CustomersCompanion customer) async {
@@ -26,41 +26,55 @@ class CrmLocalDataSource {
   }
 
   Future<void> updateCustomer(db.CustomersCompanion customer, String id) async {
-    await (_database.update(_database.customers)
-      ..where((t) => t.id.equals(id))
-    ).write(customer);
+    await (_database.update(
+      _database.customers,
+    )..where((t) => t.id.equals(id))).write(customer);
   }
 
   Future<void> deleteCustomer(String id) async {
-    await (_database.delete(_database.customers)
-      ..where((t) => t.id.equals(id))
-    ).go();
+    await (_database.delete(
+      _database.customers,
+    )..where((t) => t.id.equals(id))).go();
   }
 
-  Future<List<Map<String, dynamic>>> getCustomerPurchaseHistory(String customerId) async {
-    final orders = await (_database.select(_database.orders)
-      ..where((t) => t.customerId.equals(customerId))
-      ..orderBy([(t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)])
-    ).get();
+  Future<List<Map<String, dynamic>>> getCustomerPurchaseHistory(
+    String customerId,
+  ) async {
+    final orders =
+        await (_database.select(_database.orders)
+              ..where((t) => t.customerId.equals(customerId))
+              ..orderBy([
+                (t) => OrderingTerm(
+                  expression: t.createdAt,
+                  mode: OrderingMode.desc,
+                ),
+              ]))
+            .get();
 
-    return orders.map((o) => {
-      'id': o.id,
-      'orderNumber': o.orderNumber,
-      'total': o.total,
-      'status': o.status,
-      'createdAt': o.createdAt,
-    }).toList();
+    return orders
+        .map(
+          (o) => {
+            'id': o.id,
+            'orderNumber': o.orderNumber,
+            'total': o.total,
+            'status': o.status,
+            'createdAt': o.createdAt,
+          },
+        )
+        .toList();
   }
 
   Future<void> addLoyaltyPoints(String customerId, double points) async {
     final customer = await getCustomerById(customerId);
     if (customer == null) return;
     final newPoints = customer.loyaltyPoints + points;
-    await (_database.update(_database.customers)
-      ..where((t) => t.id.equals(customerId))
-    ).write(db.CustomersCompanion(
-      loyaltyPoints: Value(newPoints),
-      updatedAt: Value(DateTime.now()),
-    ));
+    await (_database.update(
+      _database.customers,
+    )..where((t) => t.id.equals(customerId))).write(
+      db.CustomersCompanion(
+        loyaltyPoints: Value(newPoints),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 }

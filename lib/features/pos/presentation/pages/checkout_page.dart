@@ -45,9 +45,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Checkout'),
-      ),
+      appBar: AppBar(title: const Text('Checkout')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -59,16 +57,23 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Customer', style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      'Customer',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _customerNameController,
-                      decoration: const InputDecoration(labelText: 'Customer Name (optional)'),
+                      decoration: const InputDecoration(
+                        labelText: 'Customer Name (optional)',
+                      ),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _customerPhoneController,
-                      decoration: const InputDecoration(labelText: 'Phone (optional)'),
+                      decoration: const InputDecoration(
+                        labelText: 'Phone (optional)',
+                      ),
                       keyboardType: TextInputType.phone,
                     ),
                   ],
@@ -82,14 +87,20 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Discount & Tax', style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      'Discount & Tax',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
                           child: TextField(
                             controller: _discountController,
-                            decoration: const InputDecoration(labelText: 'Discount (%)', suffixText: '%'),
+                            decoration: const InputDecoration(
+                              labelText: 'Discount (%)',
+                              suffixText: '%',
+                            ),
                             keyboardType: TextInputType.number,
                             onChanged: (v) {
                               final val = double.tryParse(v) ?? 0;
@@ -101,7 +112,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                         Expanded(
                           child: TextField(
                             controller: _taxController,
-                            decoration: const InputDecoration(labelText: 'Tax Rate (%)', suffixText: '%'),
+                            decoration: const InputDecoration(
+                              labelText: 'Tax Rate (%)',
+                              suffixText: '%',
+                            ),
                             keyboardType: TextInputType.number,
                             onChanged: (v) {
                               final val = double.tryParse(v) ?? 0;
@@ -122,14 +136,27 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Payment Method', style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      'Payment Method',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 12),
-                    ...PaymentMethod.values.map((method) => RadioListTile<PaymentMethod>(
-                      title: Text(method.label),
-                      value: method,
+                    RadioGroup<PaymentMethod>(
                       groupValue: _paymentMethod,
-                      onChanged: (v) => setState(() => _paymentMethod = v ?? PaymentMethod.cash),
-                    )),
+                      onChanged: (v) => setState(
+                        () => _paymentMethod = v ?? PaymentMethod.cash,
+                      ),
+                      child: Column(
+                        children: PaymentMethod.values
+                            .map(
+                              (method) => RadioListTile<PaymentMethod>(
+                                title: Text(method.label),
+                                value: method,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -142,29 +169,48 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   children: [
                     _Row(label: 'Subtotal', value: cart.subtotal),
                     if (cart.discount > 0)
-                      _Row(label: 'Discount (${cart.discount.toStringAsFixed(0)}%)',
-                          value: -cart.discountAmount, color: AppColors.error),
+                      _Row(
+                        label:
+                            'Discount (${cart.discount.toStringAsFixed(0)}%)',
+                        value: -cart.discountAmount,
+                        color: AppColors.error,
+                      ),
                     if (cart.taxRate > 0)
-                      _Row(label: 'Tax (${cart.taxRate.toStringAsFixed(0)}%)',
-                          value: cart.taxAmount),
+                      _Row(
+                        label: 'Tax (${cart.taxRate.toStringAsFixed(0)}%)',
+                        value: cart.taxAmount,
+                      ),
                     const Divider(),
-                    _Row(label: 'Total', value: cart.total, bold: true, fontSize: 20),
+                    _Row(
+                      label: 'Total',
+                      value: cart.total,
+                      bold: true,
+                      fontSize: 20,
+                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _isProcessing ? null : () => _processOrder(authState.user?.id ?? ''),
+              onPressed: _isProcessing
+                  ? null
+                  : () => _processOrder(authState.user?.id ?? ''),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: _isProcessing
                   ? const SizedBox(
-                      width: 20, height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
-                  : Text('Complete Sale - ${NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(cart.total)}'),
+                  : Text(
+                      'Complete Sale - ${NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(cart.total)}',
+                    ),
             ),
           ],
         ),
@@ -201,9 +247,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       },
       error: (failure) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${failure.message}')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: ${failure.message}')));
         }
       },
     );
@@ -234,7 +280,13 @@ class _Row extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: fontSize, fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
           Text(
             NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(value),
             style: TextStyle(

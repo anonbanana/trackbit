@@ -7,6 +7,8 @@ abstract class CrmRepository {
   Future<Result<Customer>> createCustomer(Customer customer);
   Future<Result<Customer>> updateCustomer(Customer customer);
   Future<Result<void>> deleteCustomer(String id);
-  Future<Result<List<Map<String, dynamic>>>> getCustomerPurchaseHistory(String customerId);
+  Future<Result<List<Map<String, dynamic>>>> getCustomerPurchaseHistory(
+    String customerId,
+  );
   Future<Result<void>> addLoyaltyPoints(String customerId, double points);
 }

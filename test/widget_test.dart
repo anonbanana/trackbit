@@ -4,9 +4,7 @@ import 'package:trackbit/app.dart';
 
 void main() {
   testWidgets('App loads without errors', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(child: TrackBitApp()),
-    );
+    await tester.pumpWidget(const ProviderScope(child: TrackBitApp()));
     expect(find.byType(TrackBitApp), findsOneWidget);
   });
 }

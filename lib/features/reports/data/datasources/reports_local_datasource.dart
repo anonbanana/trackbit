@@ -4,7 +4,10 @@ class ReportsLocalDataSource {
   final db.AppDatabase _database;
   ReportsLocalDataSource(this._database);
 
-  Future<List<db.Order>> getOrdersInRange({DateTime? start, DateTime? end}) async {
+  Future<List<db.Order>> getOrdersInRange({
+    DateTime? start,
+    DateTime? end,
+  }) async {
     final all = await _database.select(_database.orders).get();
     if (start == null && end == null) return all;
     return all.where((o) {
@@ -14,7 +17,10 @@ class ReportsLocalDataSource {
     }).toList();
   }
 
-  Future<List<db.Expense>> getExpensesInRange({DateTime? start, DateTime? end}) async {
+  Future<List<db.Expense>> getExpensesInRange({
+    DateTime? start,
+    DateTime? end,
+  }) async {
     final all = await _database.select(_database.expenses).get();
     if (start == null && end == null) return all;
     return all.where((e) {

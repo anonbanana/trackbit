@@ -26,7 +26,9 @@ class EmployeesPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (employees) {
           if (employees.isEmpty) {
-            return const Center(child: Text('No employees yet. Tap + to add one.'));
+            return const Center(
+              child: Text('No employees yet. Tap + to add one.'),
+            );
           }
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(employeesProvider),
@@ -41,11 +43,19 @@ class EmployeesPage extends ConsumerWidget {
                     leading: CircleAvatar(
                       backgroundColor: AppColors.primaryLight,
                       child: Text(
-                        emp.position.isNotEmpty ? emp.position[0].toUpperCase() : '?',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        emp.position.isNotEmpty
+                            ? emp.position[0].toUpperCase()
+                            : '?',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    title: Text(emp.position, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    title: Text(
+                      emp.position,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                     subtitle: Text(
                       'Salary: \$${emp.salary.toStringAsFixed(2)}${emp.isActive ? '' : ' (Inactive)'}',
                     ),
@@ -53,10 +63,16 @@ class EmployeesPage extends ConsumerWidget {
                       onSelected: (value) {
                         if (value == 'edit') {
                           context.push('/employees/${emp.id}/edit');
+                        } else if (value == 'delete') {
+                          _confirmDelete(context, ref, emp);
                         }
                       },
                       itemBuilder: (_) => [
                         const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Delete'),
+                        ),
                       ],
                     ),
                     isThreeLine: false,
@@ -66,6 +82,44 @@ class EmployeesPage extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref, dynamic emp) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Employee'),
+        content: Text('Delete "${emp.position}" employee?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final repo = ref.read(employeeRepositoryProvider);
+              final result = await repo.deleteEmployee(emp.id);
+              result.when(
+                success: (_) {
+                  ref.invalidate(employeesProvider);
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Employee deleted')),
+                  );
+                },
+                error: (f) {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${f.message}')),
+                  );
+                },
+              );
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

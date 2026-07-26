@@ -18,8 +18,12 @@ class TrackBitApp extends ConsumerWidget {
     final isDark = themeMode == ThemeMode.dark;
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        systemNavigationBarColor: isDark ? AppColors.darkBackground : AppColors.background,
-        systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.background,
+        systemNavigationBarIconBrightness: isDark
+            ? Brightness.light
+            : Brightness.dark,
       ),
     );
 
@@ -34,10 +38,7 @@ class TrackBitApp extends ConsumerWidget {
         // Global error handler for Flutter errors
         FlutterError.onError = (details) {
           FlutterError.presentError(details);
-          Sentry.captureException(
-            details.exception,
-            stackTrace: details.stack,
-          );
+          Sentry.captureException(details.exception, stackTrace: details.stack);
         };
         return child ?? const SizedBox.shrink();
       },

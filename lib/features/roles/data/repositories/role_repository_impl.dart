@@ -83,7 +83,10 @@ class RoleRepositoryImpl implements RoleRepository {
   }
 
   @override
-  Future<Result<void>> assignPermissionsToRole(String roleId, List<String> permissionIds) async {
+  Future<Result<void>> assignPermissionsToRole(
+    String roleId,
+    List<String> permissionIds,
+  ) async {
     try {
       await _dataSource.assignPermissionsToRole(roleId, permissionIds);
       return const Success(null);
@@ -102,122 +105,140 @@ class RoleRepositoryImpl implements RoleRepository {
       final now = DateTime.now();
 
       final superAdminId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: superAdminId,
-        name: 'super_admin',
-        label: 'Super Admin',
-        description: 'System administrator with all permissions',
-        isSystem: true,
-        isCustomizable: false,
-        level: 0,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: superAdminId,
+          name: 'super_admin',
+          label: 'Super Admin',
+          description: 'System administrator with all permissions',
+          isSystem: true,
+          isCustomizable: false,
+          level: 0,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final bossOwnerId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: bossOwnerId,
-        name: 'boss_owner',
-        label: 'Boss Owner',
-        description: 'Business owner with full access',
-        isSystem: true,
-        isCustomizable: true,
-        level: 1,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: bossOwnerId,
+          name: 'boss_owner',
+          label: 'Boss Owner',
+          description: 'Business owner with full access',
+          isSystem: true,
+          isCustomizable: true,
+          level: 1,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final bossCoOwnerId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: bossCoOwnerId,
-        name: 'boss_co_owner',
-        label: 'Boss Co-Owner',
-        description: 'Co-owner with nearly full access',
-        parentRoleId: bossOwnerId,
-        isSystem: true,
-        isCustomizable: true,
-        level: 1,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: bossCoOwnerId,
+          name: 'boss_co_owner',
+          label: 'Boss Co-Owner',
+          description: 'Co-owner with nearly full access',
+          parentRoleId: bossOwnerId,
+          isSystem: true,
+          isCustomizable: true,
+          level: 1,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final storeManagerId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: storeManagerId,
-        name: 'store_manager',
-        label: 'Store Manager',
-        description: 'Manages day-to-day store operations',
-        isSystem: true,
-        isCustomizable: true,
-        level: 2,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: storeManagerId,
+          name: 'store_manager',
+          label: 'Store Manager',
+          description: 'Manages day-to-day store operations',
+          isSystem: true,
+          isCustomizable: true,
+          level: 2,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final branchManagerId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: branchManagerId,
-        name: 'branch_manager',
-        label: 'Branch Manager',
-        description: 'Manages a specific branch',
-        isSystem: true,
-        isCustomizable: true,
-        level: 2,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: branchManagerId,
+          name: 'branch_manager',
+          label: 'Branch Manager',
+          description: 'Manages a specific branch',
+          isSystem: true,
+          isCustomizable: true,
+          level: 2,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final accountantId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: accountantId,
-        name: 'employee_accountant',
-        label: 'Employee Accountant',
-        description: 'Handles accounting and finances',
-        isSystem: true,
-        isCustomizable: true,
-        level: 3,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: accountantId,
+          name: 'employee_accountant',
+          label: 'Employee Accountant',
+          description: 'Handles accounting and finances',
+          isSystem: true,
+          isCustomizable: true,
+          level: 3,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final cashierId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: cashierId,
-        name: 'employee_cashier',
-        label: 'Employee Cashier',
-        description: 'Operates the POS and handles sales',
-        isSystem: true,
-        isCustomizable: true,
-        level: 3,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: cashierId,
+          name: 'employee_cashier',
+          label: 'Employee Cashier',
+          description: 'Operates the POS and handles sales',
+          isSystem: true,
+          isCustomizable: true,
+          level: 3,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final warehouseId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: warehouseId,
-        name: 'employee_warehouse',
-        label: 'Employee Warehouse',
-        description: 'Manages inventory and stock',
-        isSystem: true,
-        isCustomizable: true,
-        level: 3,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: warehouseId,
+          name: 'employee_warehouse',
+          label: 'Employee Warehouse',
+          description: 'Manages inventory and stock',
+          isSystem: true,
+          isCustomizable: true,
+          level: 3,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       final salesId = _uuid.v4();
-      await _dataSource.insertRole(Role(
-        id: salesId,
-        name: 'employee_sales',
-        label: 'Employee Sales',
-        description: 'Handles sales and customer relations',
-        isSystem: true,
-        isCustomizable: true,
-        level: 3,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await _dataSource.insertRole(
+        Role(
+          id: salesId,
+          name: 'employee_sales',
+          label: 'Employee Sales',
+          description: 'Handles sales and customer relations',
+          isSystem: true,
+          isCustomizable: true,
+          level: 3,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
 
       return const Success(null);
     } catch (e) {

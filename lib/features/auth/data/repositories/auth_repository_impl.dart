@@ -18,19 +18,20 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final user = await _dataSource.getUserByUsername(username);
       if (user == null) {
-        return Error(const AuthFailure('User not found'));
+        return const Error(AuthFailure('Invalid username or password'));
       }
       final passwordHash = _hashPassword(password);
-      if (passwordHash != user.passwordHash) {
-        return Error(const AuthFailure('Invalid password'));
+      final storedHash = await _dataSource.getPasswordHash(user.id);
+      if (storedHash == null || passwordHash != storedHash) {
+        return const Error(AuthFailure('Invalid username or password'));
       }
       if (!user.isActive) {
-        return Error(const AuthFailure('User account is disabled'));
+        return const Error(AuthFailure('User account is disabled'));
       }
       await _dataSource.saveSession(user.id);
       return Success(user);
     } catch (e) {
-      return Error(AuthFailure('Login failed: $e'));
+      return const Error(AuthFailure('Login failed'));
     }
   }
 
@@ -44,7 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final existing = await _dataSource.getUserByUsername(username);
       if (existing != null) {
-        return Error(const AuthFailure('Username already exists'));
+        return const Error(AuthFailure('Username already exists'));
       }
       final id = _uuid.v4();
       final passwordHash = _hashPassword(password);
@@ -56,9 +57,12 @@ class AuthRepositoryImpl implements AuthRepository {
         roleId: roleId,
       );
       final user = await _dataSource.getUserById(id);
-      return Success(user!);
+      if (user == null) {
+        return const Error(AuthFailure('Registration failed'));
+      }
+      return Success(user);
     } catch (e) {
-      return Error(AuthFailure('Registration failed: $e'));
+      return const Error(AuthFailure('Registration failed'));
     }
   }
 
@@ -68,7 +72,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _dataSource.clearSession();
       return const Success(null);
     } catch (e) {
-      return Error(AuthFailure('Logout failed: $e'));
+      return const Error(AuthFailure('Logout failed'));
     }
   }
 
@@ -82,7 +86,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await _dataSource.getUserById(userId);
       return Success(user);
     } catch (e) {
-      return Error(AuthFailure('Failed to get current user: $e'));
+      return const Error(AuthFailure('Failed to get current user'));
     }
   }
 
@@ -92,7 +96,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final userId = await _dataSource.getSessionUserId();
       return Success(userId != null);
     } catch (e) {
-      return Error(AuthFailure('Failed to check login status: $e'));
+      return const Error(AuthFailure('Failed to check login status'));
     }
   }
 
@@ -102,7 +106,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final users = await _dataSource.getAllUsers();
       return Success(users);
     } catch (e) {
-      return Error(AuthFailure('Failed to get users: $e'));
+      return const Error(AuthFailure('Failed to get users'));
     }
   }
 
@@ -112,7 +116,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _dataSource.updateUser(user);
       return const Success(null);
     } catch (e) {
-      return Error(AuthFailure('Failed to update user: $e'));
+      return const Error(AuthFailure('Failed to update user'));
     }
   }
 
@@ -122,7 +126,29 @@ class AuthRepositoryImpl implements AuthRepository {
       await _dataSource.deleteUser(id);
       return const Success(null);
     } catch (e) {
-      return Error(AuthFailure('Failed to delete user: $e'));
+      return const Error(AuthFailure('Failed to delete user'));
+    }
+  }
+
+  @override
+  Future<Result<void>> changePassword(
+    String userId,
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      final storedHash = await _dataSource.getPasswordHash(userId);
+      if (storedHash == null) {
+        return const Error(AuthFailure('User not found'));
+      }
+      if (_hashPassword(currentPassword) != storedHash) {
+        return const Error(AuthFailure('Current password is incorrect'));
+      }
+      final newHash = _hashPassword(newPassword);
+      await _dataSource.updatePasswordHash(userId, newHash);
+      return const Success(null);
+    } catch (e) {
+      return const Error(AuthFailure('Failed to change password'));
     }
   }
 

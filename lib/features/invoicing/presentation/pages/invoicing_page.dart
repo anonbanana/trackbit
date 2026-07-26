@@ -30,10 +30,15 @@ class InvoicingPage extends ConsumerWidget {
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor: _statusColor(invoice.status),
-                    child: Text(invoice.status[0].toUpperCase(),
-                        style: const TextStyle(color: Colors.white, fontSize: 16)),
+                    child: Text(
+                      invoice.status[0].toUpperCase(),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
-                  title: Text(invoice.invoiceNumber, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  title: Text(
+                    invoice.invoiceNumber,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   subtitle: Text(
                     invoice.customerName ?? 'No customer',
                     style: const TextStyle(fontSize: 12),
@@ -42,10 +47,20 @@ class InvoicingPage extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(invoice.total),
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(invoice.status.toUpperCase(),
-                          style: TextStyle(fontSize: 10, color: _statusColor(invoice.status))),
+                      Text(
+                        NumberFormat.currency(
+                          symbol: '\$',
+                          decimalDigits: 2,
+                        ).format(invoice.total),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        invoice.status.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: _statusColor(invoice.status),
+                        ),
+                      ),
                     ],
                   ),
                   onTap: () => _showInvoiceDetail(context, ref, invoice),
@@ -64,7 +79,11 @@ class InvoicingPage extends ConsumerWidget {
     );
   }
 
-  void _showInvoiceDetail(BuildContext context, WidgetRef ref, domain.Invoice invoice) {
+  void _showInvoiceDetail(
+    BuildContext context,
+    WidgetRef ref,
+    domain.Invoice invoice,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -73,29 +92,33 @@ class InvoicingPage extends ConsumerWidget {
   }
 
   void _showGenerateDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (ctx) => _GenerateInvoiceDialog(),
-    );
+    showDialog(context: context, builder: (ctx) => _GenerateInvoiceDialog());
   }
 
   Color _statusColor(String status) {
     switch (status) {
-      case 'pending': return AppColors.warning;
-      case 'paid': return AppColors.success;
-      case 'overdue': return AppColors.error;
-      case 'cancelled': return AppColors.textHint;
-      default: return AppColors.info;
+      case 'pending':
+        return AppColors.warning;
+      case 'paid':
+        return AppColors.success;
+      case 'overdue':
+        return AppColors.error;
+      case 'cancelled':
+        return const Color(0xFF94A3B8);
+      default:
+        return AppColors.info;
     }
   }
 }
 
 class _GenerateInvoiceDialog extends ConsumerStatefulWidget {
   @override
-  ConsumerState<_GenerateInvoiceDialog> createState() => _GenerateInvoiceDialogState();
+  ConsumerState<_GenerateInvoiceDialog> createState() =>
+      _GenerateInvoiceDialogState();
 }
 
-class _GenerateInvoiceDialogState extends ConsumerState<_GenerateInvoiceDialog> {
+class _GenerateInvoiceDialogState
+    extends ConsumerState<_GenerateInvoiceDialog> {
   String? _selectedOrderId;
 
   @override
@@ -109,17 +132,23 @@ class _GenerateInvoiceDialogState extends ConsumerState<_GenerateInvoiceDialog> 
         child: ordersAsync.when(
           data: (orders) {
             if (orders.isEmpty) return const Text('No completed orders found');
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...orders.map((order) => RadioListTile<String>(
-                  title: Text('${order.orderNumber} - ${NumberFormat.currency(symbol: '\$').format(order.total)}'),
-                  subtitle: Text(order.customerName ?? 'Walk-in'),
-                  value: order.id,
-                  groupValue: _selectedOrderId,
-                  onChanged: (v) => setState(() => _selectedOrderId = v),
-                )),
-              ],
+            return RadioGroup<String>(
+              groupValue: _selectedOrderId,
+              onChanged: (v) => setState(() => _selectedOrderId = v),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...orders.map(
+                    (order) => RadioListTile<String>(
+                      title: Text(
+                        '${order.orderNumber} - ${NumberFormat.currency(symbol: '\$').format(order.total)}',
+                      ),
+                      subtitle: Text(order.customerName ?? 'Walk-in'),
+                      value: order.id,
+                    ),
+                  ),
+                ],
+              ),
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -127,7 +156,10 @@ class _GenerateInvoiceDialogState extends ConsumerState<_GenerateInvoiceDialog> 
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
         ElevatedButton(
           onPressed: _selectedOrderId == null ? null : () => _generate(context),
           child: const Text('Generate'),
@@ -143,9 +175,13 @@ class _GenerateInvoiceDialogState extends ConsumerState<_GenerateInvoiceDialog> 
       success: (_) {
         ref.invalidate(invoicesProvider);
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice generated')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Invoice generated')));
       },
-      error: (f) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
+      error: (f) => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
     );
   }
 }
@@ -169,33 +205,66 @@ class _InvoiceDetailSheet extends ConsumerWidget {
           child: ListView(
             controller: scrollController,
             children: [
-              Center(child: Text(invoice.invoiceNumber,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+              Center(
+                child: Text(
+                  invoice.invoiceNumber,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
               const Divider(height: 16),
               if (invoice.customerName != null)
                 _Row(label: 'Customer', value: invoice.customerName!),
               if (invoice.dueDate != null)
-                _Row(label: 'Due Date', value: DateFormat('MMM dd, yyyy').format(invoice.dueDate!)),
+                _Row(
+                  label: 'Due Date',
+                  value: DateFormat('MMM dd, yyyy').format(invoice.dueDate!),
+                ),
               _Row(label: 'Status', value: invoice.status.toUpperCase()),
-              _Row(label: 'Total', value: NumberFormat.currency(symbol: '\$', decimalDigits: 2).format(invoice.total)),
+              _Row(
+                label: 'Total',
+                value: NumberFormat.currency(
+                  symbol: '\$',
+                  decimalDigits: 2,
+                ).format(invoice.total),
+              ),
               const Divider(),
               Text('Items', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               itemsAsync.when(
                 data: (List<domain.InvoiceItem> items) => Column(
-                  children: items.map((item) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        Expanded(child: Text(item.description, style: const TextStyle(fontSize: 13))),
-                        Text('${item.quantity.toStringAsFixed(0)} x ${NumberFormat.currency(symbol: '\$').format(item.unitPrice)}',
-                            style: const TextStyle(fontSize: 12)),
-                        const SizedBox(width: 8),
-                        Text(NumberFormat.currency(symbol: '\$').format(item.total),
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  )).toList(),
+                  children: items
+                      .map(
+                        (item) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  item.description,
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ),
+                              Text(
+                                '${item.quantity.toStringAsFixed(0)} x ${NumberFormat.currency(symbol: '\$').format(item.unitPrice)}',
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                NumberFormat.currency(
+                                  symbol: '\$',
+                                ).format(item.total),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Text('Error: $e'),
@@ -220,7 +289,14 @@ class _Row extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: AppColors.textSecondary)),
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),

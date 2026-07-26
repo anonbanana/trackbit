@@ -32,9 +32,15 @@ class CrmPage extends ConsumerWidget {
                     backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                     child: const Icon(Icons.person, color: AppColors.primary),
                   ),
-                  title: Text(customer.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  title: Text(
+                    customer.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   subtitle: Text(
-                    [customer.phone ?? '', customer.email ?? ''].where((e) => e.isNotEmpty).join(' • '),
+                    [
+                      customer.phone ?? '',
+                      customer.email ?? '',
+                    ].where((e) => e.isNotEmpty).join(' • '),
                     style: const TextStyle(fontSize: 12),
                   ),
                   trailing: Row(
@@ -42,25 +48,45 @@ class CrmPage extends ConsumerWidget {
                     children: [
                       if (customer.loyaltyPoints > 0)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.warning.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text('${customer.loyaltyPoints.toStringAsFixed(0)} pts',
-                              style: const TextStyle(fontSize: 10, color: AppColors.warning)),
+                          child: Text(
+                            '${customer.loyaltyPoints.toStringAsFixed(0)} pts',
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: AppColors.warning,
+                            ),
+                          ),
                         ),
                       const SizedBox(width: 4),
                       PopupMenuButton(
                         itemBuilder: (context) => [
-                          const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                          const PopupMenuItem(value: 'history', child: Text('Purchase History')),
-                          const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem(
+                            value: 'history',
+                            child: Text('Purchase History'),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Delete'),
+                          ),
                         ],
                         onSelected: (v) {
-                          if (v == 'edit') _showCustomerForm(context, ref, customer);
-                          if (v == 'history') _showPurchaseHistory(context, ref, customer);
-                          if (v == 'delete') _deleteCustomer(context, ref, customer.id);
+                          if (v == 'edit')
+                            _showCustomerForm(context, ref, customer);
+                          if (v == 'history')
+                            _showPurchaseHistory(context, ref, customer);
+                          if (v == 'delete')
+                            _deleteCustomer(context, ref, customer.id);
                         },
                       ),
                     ],
@@ -81,7 +107,11 @@ class CrmPage extends ConsumerWidget {
     );
   }
 
-  void _showCustomerForm(BuildContext context, WidgetRef ref, domain.Customer? customer) {
+  void _showCustomerForm(
+    BuildContext context,
+    WidgetRef ref,
+    domain.Customer? customer,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -89,7 +119,11 @@ class CrmPage extends ConsumerWidget {
     );
   }
 
-  void _showPurchaseHistory(BuildContext context, WidgetRef ref, domain.Customer customer) {
+  void _showPurchaseHistory(
+    BuildContext context,
+    WidgetRef ref,
+    domain.Customer customer,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -97,15 +131,25 @@ class CrmPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _deleteCustomer(BuildContext context, WidgetRef ref, String id) async {
+  Future<void> _deleteCustomer(
+    BuildContext context,
+    WidgetRef ref,
+    String id,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Customer'),
         content: const Text('Delete this customer?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete'),
+          ),
         ],
       ),
     );
@@ -114,7 +158,9 @@ class CrmPage extends ConsumerWidget {
       final result = await repo.deleteCustomer(id);
       result.when(
         success: (_) => ref.invalidate(customersProvider),
-        error: (f) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
+        error: (f) => ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
       );
     }
   }
@@ -162,7 +208,9 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 16, right: 16, top: 16,
+        left: 16,
+        right: 16,
+        top: 16,
         bottom: MediaQuery.of(context).viewInsets.bottom + 16,
       ),
       child: Form(
@@ -170,17 +218,33 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(_isEditing ? 'Edit Customer' : 'Add Customer',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              _isEditing ? 'Edit Customer' : 'Add Customer',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
-            TextFormField(controller: _nameCtrl, decoration: const InputDecoration(labelText: 'Name'),
-                validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null),
+            TextFormField(
+              controller: _nameCtrl,
+              decoration: const InputDecoration(labelText: 'Name'),
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Required' : null,
+            ),
             const SizedBox(height: 12),
-            TextFormField(controller: _phoneCtrl, decoration: const InputDecoration(labelText: 'Phone')),
+            TextFormField(
+              controller: _phoneCtrl,
+              decoration: const InputDecoration(labelText: 'Phone'),
+            ),
             const SizedBox(height: 12),
-            TextFormField(controller: _emailCtrl, decoration: const InputDecoration(labelText: 'Email')),
+            TextFormField(
+              controller: _emailCtrl,
+              decoration: const InputDecoration(labelText: 'Email'),
+            ),
             const SizedBox(height: 12),
-            TextFormField(controller: _addressCtrl, decoration: const InputDecoration(labelText: 'Address'), maxLines: 2),
+            TextFormField(
+              controller: _addressCtrl,
+              decoration: const InputDecoration(labelText: 'Address'),
+              maxLines: 2,
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _save,
@@ -199,21 +263,29 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
       name: _nameCtrl.text.trim(),
       phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
       email: _emailCtrl.text.trim().isEmpty ? null : _emailCtrl.text.trim(),
-      address: _addressCtrl.text.trim().isEmpty ? null : _addressCtrl.text.trim(),
+      address: _addressCtrl.text.trim().isEmpty
+          ? null
+          : _addressCtrl.text.trim(),
       createdAt: _isEditing ? widget.customer!.createdAt : DateTime.now(),
       updatedAt: DateTime.now(),
     );
     final repo = ref.read(crmRepositoryProvider);
-    final result = _isEditing ? await repo.updateCustomer(customer) : await repo.createCustomer(customer);
+    final result = _isEditing
+        ? await repo.updateCustomer(customer)
+        : await repo.createCustomer(customer);
     result.when(
       success: (_) {
         ref.invalidate(customersProvider);
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_isEditing ? 'Customer updated' : 'Customer created')),
+          SnackBar(
+            content: Text(_isEditing ? 'Customer updated' : 'Customer created'),
+          ),
         );
       },
-      error: (f) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
+      error: (f) => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
     );
   }
 }
@@ -224,7 +296,9 @@ class _PurchaseHistorySheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final historyAsync = ref.watch(customerPurchaseHistoryProvider(customer.id));
+    final historyAsync = ref.watch(
+      customerPurchaseHistoryProvider(customer.id),
+    );
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -237,23 +311,48 @@ class _PurchaseHistorySheet extends ConsumerWidget {
           child: ListView(
             controller: scrollController,
             children: [
-              Text(customer.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                customer.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 4),
-              Text('${customer.loyaltyPoints.toStringAsFixed(0)} loyalty points',
-                  style: const TextStyle(color: AppColors.warning)),
+              Text(
+                '${customer.loyaltyPoints.toStringAsFixed(0)} loyalty points',
+                style: const TextStyle(color: AppColors.warning),
+              ),
               const Divider(height: 16),
-              Text('Purchase History', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Purchase History',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               historyAsync.when(
                 data: (orders) {
                   if (orders.isEmpty) return const Text('No purchases yet');
                   return Column(
-                    children: orders.map((o) => ListTile(
-                      title: Text(o['orderNumber'] as String),
-                      subtitle: Text(DateFormat('MMM dd, yyyy').format(o['createdAt'] as DateTime)),
-                      trailing: Text(NumberFormat.currency(symbol: '\$').format(o['total']),
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                    )).toList(),
+                    children: orders
+                        .map(
+                          (o) => ListTile(
+                            title: Text(o['orderNumber'] as String),
+                            subtitle: Text(
+                              DateFormat(
+                                'MMM dd, yyyy',
+                              ).format(o['createdAt'] as DateTime),
+                            ),
+                            trailing: Text(
+                              NumberFormat.currency(
+                                symbol: '\$',
+                              ).format(o['total']),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),

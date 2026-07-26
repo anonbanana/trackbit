@@ -10,23 +10,73 @@ class DefaultPermissions {
 
     final permissions = [
       // Dashboard
-      ('dashboard.view', 'View Dashboard', 'Dashboard', 'Access the main dashboard'),
-      ('dashboard.export', 'Export Dashboard Data', 'Dashboard', 'Export dashboard reports'),
+      (
+        'dashboard.view',
+        'View Dashboard',
+        'Dashboard',
+        'Access the main dashboard',
+      ),
+      (
+        'dashboard.export',
+        'Export Dashboard Data',
+        'Dashboard',
+        'Export dashboard reports',
+      ),
 
       // Inventory
-      ('inventory.view', 'View Inventory', 'Inventory', 'View product catalog and stock'),
+      (
+        'inventory.view',
+        'View Inventory',
+        'Inventory',
+        'View product catalog and stock',
+      ),
       ('inventory.create', 'Create Products', 'Inventory', 'Add new products'),
-      ('inventory.edit', 'Edit Products', 'Inventory', 'Edit existing products'),
+      (
+        'inventory.edit',
+        'Edit Products',
+        'Inventory',
+        'Edit existing products',
+      ),
       ('inventory.delete', 'Delete Products', 'Inventory', 'Remove products'),
-      ('inventory.stock.adjust', 'Adjust Stock', 'Inventory', 'Perform stock adjustments'),
-      ('inventory.barcode', 'Scan Barcodes', 'Inventory', 'Use barcode scanner'),
-      ('inventory.categories.manage', 'Manage Categories', 'Inventory', 'CRUD product categories'),
+      (
+        'inventory.stock.adjust',
+        'Adjust Stock',
+        'Inventory',
+        'Perform stock adjustments',
+      ),
+      (
+        'inventory.barcode',
+        'Scan Barcodes',
+        'Inventory',
+        'Use barcode scanner',
+      ),
+      (
+        'inventory.categories.manage',
+        'Manage Categories',
+        'Inventory',
+        'CRUD product categories',
+      ),
 
       // POS
       ('pos.access', 'Access POS', 'Point of Sale', 'Use the POS interface'),
-      ('pos.sell', 'Process Sales', 'Point of Sale', 'Complete sales transactions'),
-      ('pos.discount', 'Apply Discounts', 'Point of Sale', 'Add discounts to sales'),
-      ('pos.refund', 'Process Refunds', 'Point of Sale', 'Issue refunds to customers'),
+      (
+        'pos.sell',
+        'Process Sales',
+        'Point of Sale',
+        'Complete sales transactions',
+      ),
+      (
+        'pos.discount',
+        'Apply Discounts',
+        'Point of Sale',
+        'Add discounts to sales',
+      ),
+      (
+        'pos.refund',
+        'Process Refunds',
+        'Point of Sale',
+        'Issue refunds to customers',
+      ),
       ('pos.print', 'Print Receipts', 'Point of Sale', 'Print sales receipts'),
 
       // Sales
@@ -35,10 +85,20 @@ class DefaultPermissions {
 
       // Invoicing
       ('invoices.view', 'View Invoices', 'Invoicing', 'View invoice list'),
-      ('invoices.create', 'Create Invoices', 'Invoicing', 'Generate new invoices'),
+      (
+        'invoices.create',
+        'Create Invoices',
+        'Invoicing',
+        'Generate new invoices',
+      ),
       ('invoices.edit', 'Edit Invoices', 'Invoicing', 'Modify invoices'),
       ('invoices.delete', 'Delete Invoices', 'Invoicing', 'Remove invoices'),
-      ('invoices.print', 'Print Invoices', 'Invoicing', 'Print or export invoices'),
+      (
+        'invoices.print',
+        'Print Invoices',
+        'Invoicing',
+        'Print or export invoices',
+      ),
 
       // Expenses
       ('expenses.view', 'View Expenses', 'Expenses', 'View expense list'),
@@ -55,7 +115,12 @@ class DefaultPermissions {
       // Employees
       ('employees.view', 'View Employees', 'Employees', 'View employee list'),
       ('employees.create', 'Add Employees', 'Employees', 'Hire new employees'),
-      ('employees.edit', 'Edit Employees', 'Employees', 'Modify employee details'),
+      (
+        'employees.edit',
+        'Edit Employees',
+        'Employees',
+        'Modify employee details',
+      ),
       ('employees.delete', 'Delete Employees', 'Employees', 'Remove employees'),
 
       // Roles & Users
@@ -70,26 +135,50 @@ class DefaultPermissions {
 
       // Reports
       ('reports.view', 'View Reports', 'Reports', 'Access reports section'),
-      ('reports.export', 'Export Reports', 'Reports', 'Export reports in PDF/Excel/CSV'),
+      (
+        'reports.export',
+        'Export Reports',
+        'Reports',
+        'Export reports in PDF/Excel/CSV',
+      ),
 
       // Sync
       ('sync.view', 'View Sync Status', 'Sync', 'View sync dashboard'),
-      ('sync.trigger', 'Trigger Sync', 'Sync', 'Manually trigger synchronization'),
+      (
+        'sync.trigger',
+        'Trigger Sync',
+        'Sync',
+        'Manually trigger synchronization',
+      ),
       ('sync.configure', 'Configure Sync', 'Sync', 'Modify sync settings'),
 
       // Settings
       ('settings.view', 'View Settings', 'Settings', 'Access settings'),
-      ('settings.edit', 'Edit Settings', 'Settings', 'Modify application settings'),
-      ('settings.receipt', 'Configure Receipt', 'Settings', 'Modify receipt print settings'),
+      (
+        'settings.edit',
+        'Edit Settings',
+        'Settings',
+        'Modify application settings',
+      ),
+      (
+        'settings.receipt',
+        'Configure Receipt',
+        'Settings',
+        'Modify receipt print settings',
+      ),
     ];
 
     for (final (id, label, group, description) in permissions) {
-      await db.into(db.permissions).insert(PermissionsCompanion(
-        id: Value(id),
-        label: Value(label),
-        groupName: Value(group),
-        description: Value(description),
-      ));
+      await db
+          .into(db.permissions)
+          .insert(
+            PermissionsCompanion(
+              id: Value(id),
+              label: Value(label),
+              groupName: Value(group),
+              description: Value(description),
+            ),
+          );
     }
   }
 }

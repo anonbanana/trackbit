@@ -11,14 +11,19 @@ final posDataSourceProvider = Provider<PosLocalDataSource>((ref) {
 });
 
 final posRepositoryProvider = Provider<PosRepository>((ref) {
-  return PosRepositoryImpl(ref.watch(posDataSourceProvider));
+  return PosRepositoryImpl(
+    ref.watch(posDataSourceProvider),
+    ref.watch(databaseProvider),
+  );
 });
 
 class CartNotifier extends StateNotifier<Cart> {
   CartNotifier() : super(const Cart());
 
   void addItem(CartItem item) {
-    final existingIndex = state.items.indexWhere((i) => i.productId == item.productId);
+    final existingIndex = state.items.indexWhere(
+      (i) => i.productId == item.productId,
+    );
     if (existingIndex >= 0) {
       final existing = state.items[existingIndex];
       final newItems = [...state.items];
@@ -69,11 +74,16 @@ final cartProvider = StateNotifierProvider<CartNotifier, Cart>((ref) {
   return CartNotifier();
 });
 
-final searchedPosProductsProvider = FutureProvider.family<List<Map<String, dynamic>>, String>((ref, query) async {
-  if (query.isEmpty) return [];
-  final result = await ref.watch(posRepositoryProvider).searchProducts(query);
-  return result.when(
-    success: (data) => data,
-    error: (failure) => throw Exception(failure.message),
-  );
-});
+final searchedPosProductsProvider =
+    FutureProvider.family<List<Map<String, dynamic>>, String>((
+      ref,
+      query,
+    ) async {
+      final result = await ref
+          .watch(posRepositoryProvider)
+          .searchProducts(query);
+      return result.when(
+        success: (data) => data,
+        error: (failure) => throw Exception(failure.message),
+      );
+    });

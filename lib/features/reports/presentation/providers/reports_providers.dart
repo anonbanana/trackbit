@@ -28,37 +28,65 @@ final reportsRepositoryProvider = Provider<ReportsRepository>((ref) {
   return ReportsRepositoryImpl(ref.watch(reportsDataSourceProvider));
 });
 
-final salesSummaryProvider = FutureProvider.family<SalesSummary, ReportDateRange>((ref, range) async {
-  final result = await ref.watch(reportsRepositoryProvider).getSalesSummary(
-    start: range.start, end: range.end,
-  );
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
-});
+final salesSummaryProvider =
+    FutureProvider.family<SalesSummary, ReportDateRange>((ref, range) async {
+      final result = await ref
+          .watch(reportsRepositoryProvider)
+          .getSalesSummary(start: range.start, end: range.end);
+      return result.when(
+        success: (d) => d,
+        error: (f) => throw Exception(f.message),
+      );
+    });
 
-final dailySalesProvider = FutureProvider.family<List<DailySalesSummary>, ReportDateRange>((ref, range) async {
-  final result = await ref.watch(reportsRepositoryProvider).getDailySales(
-    start: range.start, end: range.end,
-  );
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
-});
+final dailySalesProvider =
+    FutureProvider.family<List<DailySalesSummary>, ReportDateRange>((
+      ref,
+      range,
+    ) async {
+      final result = await ref
+          .watch(reportsRepositoryProvider)
+          .getDailySales(start: range.start, end: range.end);
+      return result.when(
+        success: (d) => d,
+        error: (f) => throw Exception(f.message),
+      );
+    });
 
-final expenseSummaryProvider = FutureProvider.family<ExpenseSummary, ReportDateRange>((ref, range) async {
-  final result = await ref.watch(reportsRepositoryProvider).getExpenseSummary(
-    start: range.start, end: range.end,
-  );
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
-});
+final expenseSummaryProvider =
+    FutureProvider.family<ExpenseSummary, ReportDateRange>((ref, range) async {
+      final result = await ref
+          .watch(reportsRepositoryProvider)
+          .getExpenseSummary(start: range.start, end: range.end);
+      return result.when(
+        success: (d) => d,
+        error: (f) => throw Exception(f.message),
+      );
+    });
 
-final expensesByCategoryProvider = FutureProvider.family<List<CategoryExpenseSummary>, ReportDateRange>((ref, range) async {
-  final result = await ref.watch(reportsRepositoryProvider).getExpensesByCategory(
-    start: range.start, end: range.end,
-  );
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
-});
+final expensesByCategoryProvider =
+    FutureProvider.family<List<CategoryExpenseSummary>, ReportDateRange>((
+      ref,
+      range,
+    ) async {
+      final result = await ref
+          .watch(reportsRepositoryProvider)
+          .getExpensesByCategory(start: range.start, end: range.end);
+      return result.when(
+        success: (d) => d,
+        error: (f) => throw Exception(f.message),
+      );
+    });
 
-final profitProvider = FutureProvider.family<double, ReportDateRange>((ref, range) async {
-  final result = await ref.watch(reportsRepositoryProvider).getProfit(
-    start: range.start, end: range.end,
+final profitProvider = FutureProvider.family<double, ReportDateRange>((
+  ref,
+  range,
+) async {
+  final result = await ref
+      .watch(reportsRepositoryProvider)
+      .getProfit(start: range.start, end: range.end);
+  return result.when(
+    success: (d) => d,
+    error: (f) => throw Exception(f.message),
   );
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
 });

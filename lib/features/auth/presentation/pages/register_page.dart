@@ -42,10 +42,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Create Account'),
-      ),
+      appBar: AppBar(title: const Text('Create Account')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -60,7 +57,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     labelText: 'Full Name',
                     prefixIcon: Icon(Icons.person),
                   ),
-                  validator: (v) => v == null || v.trim().isEmpty ? 'Name is required' : null,
+                  validator: (v) =>
+                      v == null || v.trim().isEmpty ? 'Name is required' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -69,7 +67,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     labelText: 'Username',
                     prefixIcon: Icon(Icons.person_outline),
                   ),
-                  validator: (v) => v == null || v.trim().isEmpty ? 'Username is required' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Username is required'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -79,8 +79,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     labelText: 'Password',
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                   validator: (v) {
@@ -98,7 +103,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     prefixIcon: Icon(Icons.lock),
                   ),
                   validator: (v) {
-                    if (v != _passwordController.text) return 'Passwords do not match';
+                    if (v != _passwordController.text)
+                      return 'Passwords do not match';
                     return null;
                   },
                 ),
@@ -110,10 +116,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                       labelText: 'Role',
                       prefixIcon: Icon(Icons.badge),
                     ),
-                    items: roles.map((role) => DropdownMenuItem(
-                      value: role.id,
-                      child: Text(role.label),
-                    )).toList(),
+                    items: roles
+                        .map(
+                          (role) => DropdownMenuItem(
+                            value: role.id,
+                            child: Text(role.label),
+                          ),
+                        )
+                        .toList(),
                     onChanged: (v) => setState(() => _selectedRoleId = v),
                     validator: (v) => v == null ? 'Role is required' : null,
                   ),
@@ -127,25 +137,39 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 ),
                 if (authState.errorMessage != null) ...[
                   const SizedBox(height: 16),
-                  Text(authState.errorMessage!, style: const TextStyle(color: AppColors.error)),
+                  Text(
+                    authState.errorMessage!,
+                    style: const TextStyle(color: AppColors.error),
+                  ),
                 ],
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: authState.status == AuthStatus.loading
                       ? null
                       : () {
-                    if (_formKey.currentState!.validate()) {
-                      ref.read(authProvider.notifier).register(
-                        username: _usernameController.text.trim(),
-                        password: _passwordController.text,
-                        fullName: _fullNameController.text.trim(),
-                        roleId: _selectedRoleId!,
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                          if (_formKey.currentState!.validate()) {
+                            ref
+                                .read(authProvider.notifier)
+                                .register(
+                                  username: _usernameController.text.trim(),
+                                  password: _passwordController.text,
+                                  fullName: _fullNameController.text.trim(),
+                                  roleId: _selectedRoleId!,
+                                );
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                   child: authState.status == AuthStatus.loading
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
                       : const Text('Register', style: TextStyle(fontSize: 16)),
                 ),
                 const SizedBox(height: 16),

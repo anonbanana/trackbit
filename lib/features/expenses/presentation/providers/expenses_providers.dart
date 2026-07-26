@@ -15,10 +15,18 @@ final expensesRepositoryProvider = Provider<ExpensesRepository>((ref) {
 
 final expensesProvider = FutureProvider<List<domain.Expense>>((ref) async {
   final result = await ref.watch(expensesRepositoryProvider).getAllExpenses();
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
+  return result.when(
+    success: (d) => d,
+    error: (f) => throw Exception(f.message),
+  );
 });
 
 final expenseCategoriesProvider = FutureProvider<List<String>>((ref) async {
-  final result = await ref.watch(expensesRepositoryProvider).getExpenseCategories();
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
+  final result = await ref
+      .watch(expensesRepositoryProvider)
+      .getExpenseCategories();
+  return result.when(
+    success: (d) => d,
+    error: (f) => throw Exception(f.message),
+  );
 });

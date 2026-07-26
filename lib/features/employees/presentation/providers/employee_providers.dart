@@ -15,5 +15,8 @@ final employeeRepositoryProvider = Provider<EmployeeRepository>((ref) {
 
 final employeesProvider = FutureProvider<List<domain.Employee>>((ref) async {
   final result = await ref.watch(employeeRepositoryProvider).getAllEmployees();
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
+  return result.when(
+    success: (d) => d,
+    error: (f) => throw Exception(f.message),
+  );
 });

@@ -27,7 +27,12 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
       ),
     );
     if (picked != null) {
-      setState(() => _selectedRange = ReportDateRange(start: picked.start, end: picked.end));
+      setState(
+        () => _selectedRange = ReportDateRange(
+          start: picked.start,
+          end: picked.end,
+        ),
+      );
     }
   }
 
@@ -37,12 +42,12 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
     final expenseAsync = ref.watch(expenseSummaryProvider(_selectedRange));
     final profitAsync = ref.watch(profitProvider(_selectedRange));
     final dailyAsync = ref.watch(dailySalesProvider(_selectedRange));
-    final catExpenseAsync = ref.watch(expensesByCategoryProvider(_selectedRange));
+    final catExpenseAsync = ref.watch(
+      expensesByCategoryProvider(_selectedRange),
+    );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Reports'),
-      ),
+      appBar: AppBar(title: const Text('Reports')),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(salesSummaryProvider);
@@ -75,16 +80,26 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
             salesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Text('Error: $e'),
-              data: (sales) => _buildSummaryCard('Sales Revenue', '\$${sales.totalRevenue.toStringAsFixed(2)}',
-                  '${sales.totalOrders} orders', AppColors.success, Icons.trending_up),
+              data: (sales) => _buildSummaryCard(
+                'Sales Revenue',
+                '\$${sales.totalRevenue.toStringAsFixed(2)}',
+                '${sales.totalOrders} orders',
+                AppColors.success,
+                Icons.trending_up,
+              ),
             ),
             const SizedBox(height: 8),
 
             expenseAsync.when(
               loading: () => const SizedBox.shrink(),
               error: (e, _) => Text('Error: $e'),
-              data: (expense) => _buildSummaryCard('Total Expenses', '\$${expense.totalExpenses.toStringAsFixed(2)}',
-                  '${expense.totalEntries} entries', AppColors.warning, Icons.money_off),
+              data: (expense) => _buildSummaryCard(
+                'Total Expenses',
+                '\$${expense.totalExpenses.toStringAsFixed(2)}',
+                '${expense.totalEntries} entries',
+                AppColors.warning,
+                Icons.money_off,
+              ),
             ),
             const SizedBox(height: 8),
 
@@ -104,7 +119,12 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
             ),
             const SizedBox(height: 24),
 
-            Text('Daily Sales', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Daily Sales',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             dailyAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -116,19 +136,39 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: days.reversed.take(7).toList().reversed.map((d) {
-                        final label =
-                            '${d.date.month}/${d.date.day}';
+                      children: days.reversed.take(7).toList().reversed.map((
+                        d,
+                      ) {
+                        final label = '${d.date.month}/${d.date.day}';
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Row(
                             children: [
-                              SizedBox(width: 80, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+                              SizedBox(
+                                width: 80,
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: LinearProgressIndicator(
-                                  value: days.isNotEmpty ? d.revenue / (days.first.revenue > 0 ? days.first.revenue : 1) : 0,
-                                  backgroundColor: AppColors.surfaceVariant,
+                                  value: days.isNotEmpty
+                                      ? d.revenue /
+                                            (days
+                                                .map((d) => d.revenue)
+                                                .fold<double>(
+                                                  0,
+                                                  (a, b) => a > b ? a : b,
+                                                )
+                                                .clamp(0.01, double.infinity))
+                                      : 0,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -144,7 +184,12 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
             ),
             const SizedBox(height: 24),
 
-            Text('Expenses by Category', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Expenses by Category',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             catExpenseAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -161,7 +206,12 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(c.category, style: const TextStyle(fontWeight: FontWeight.w500)),
+                              Text(
+                                c.category,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                               Text('\$${c.total.toStringAsFixed(2)}'),
                             ],
                           ),
@@ -178,7 +228,13 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
     );
   }
 
-  Widget _buildSummaryCard(String title, String value, String subtitle, Color color, IconData icon) {
+  Widget _buildSummaryCard(
+    String title,
+    String value,
+    String subtitle,
+    Color color,
+    IconData icon,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -186,7 +242,10 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
           children: [
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Icon(icon, color: color),
             ),
             const SizedBox(width: 16),
@@ -194,10 +253,16 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                  Text(title, style: const TextStyle(fontSize: 13)),
                   const SizedBox(height: 4),
-                  Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                  Text(subtitle, style: const TextStyle(color: AppColors.textHint, fontSize: 12)),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(subtitle, style: const TextStyle(fontSize: 12)),
                 ],
               ),
             ),

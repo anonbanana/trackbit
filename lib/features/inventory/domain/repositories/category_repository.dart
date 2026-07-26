@@ -8,6 +8,10 @@ abstract class CategoryRepository {
   Future<Result<Category>> createCategory(Category category);
   Future<Result<Category>> updateCategory(Category category);
   Future<Result<void>> deleteCategory(String id);
-  Future<Result<List<CategoryAttribute>>> getAttributesByCategoryType(String categoryType);
-  Future<Result<void>> saveCategoryAttributes(List<CategoryAttribute> attributes);
+  Future<Result<List<CategoryAttribute>>> getAttributesByCategoryType(
+    String categoryType,
+  );
+  Future<Result<void>> saveCategoryAttributes(
+    List<CategoryAttribute> attributes,
+  );
 }

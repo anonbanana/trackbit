@@ -15,10 +15,22 @@ final invoicingRepositoryProvider = Provider<InvoicingRepository>((ref) {
 
 final invoicesProvider = FutureProvider<List<domain.Invoice>>((ref) async {
   final result = await ref.watch(invoicingRepositoryProvider).getAllInvoices();
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
+  return result.when(
+    success: (d) => d,
+    error: (f) => throw Exception(f.message),
+  );
 });
 
-final invoiceItemsProvider = FutureProvider.family<List<domain.InvoiceItem>, String>((ref, invoiceId) async {
-  final result = await ref.watch(invoicingRepositoryProvider).getInvoiceItems(invoiceId);
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
-});
+final invoiceItemsProvider =
+    FutureProvider.family<List<domain.InvoiceItem>, String>((
+      ref,
+      invoiceId,
+    ) async {
+      final result = await ref
+          .watch(invoicingRepositoryProvider)
+          .getInvoiceItems(invoiceId);
+      return result.when(
+        success: (d) => d,
+        error: (f) => throw Exception(f.message),
+      );
+    });

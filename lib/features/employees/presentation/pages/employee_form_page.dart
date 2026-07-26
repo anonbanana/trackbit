@@ -31,16 +31,21 @@ class _EmployeeFormPageState extends ConsumerState<EmployeeFormPage> {
   }
 
   Future<void> _loadEmployee() async {
-    final result = await ref.read(employeeRepositoryProvider).getEmployeeById(widget.employeeId!);
-    result.when(success: (emp) {
-      if (emp != null && mounted) {
-        _positionCtrl.text = emp.position;
-        _salaryCtrl.text = emp.salary.toString();
-        _phoneCtrl.text = emp.phone ?? '';
-        _addressCtrl.text = emp.address ?? '';
-        _isActive = emp.isActive;
-      }
-    }, error: (_) {});
+    final result = await ref
+        .read(employeeRepositoryProvider)
+        .getEmployeeById(widget.employeeId!);
+    result.when(
+      success: (emp) {
+        if (emp != null && mounted) {
+          _positionCtrl.text = emp.position;
+          _salaryCtrl.text = emp.salary.toString();
+          _phoneCtrl.text = emp.phone ?? '';
+          _addressCtrl.text = emp.address ?? '';
+          _isActive = emp.isActive;
+        }
+      },
+      error: (_) {},
+    );
   }
 
   @override
@@ -56,38 +61,54 @@ class _EmployeeFormPageState extends ConsumerState<EmployeeFormPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
 
-    final now = DateTime.now();
-    final salary = double.tryParse(_salaryCtrl.text) ?? 0;
+    try {
+      final now = DateTime.now();
+      final salary = double.tryParse(_salaryCtrl.text) ?? 0;
 
-    if (widget.employeeId != null) {
-      final emp = Employee(
-        id: widget.employeeId!,
-        position: _positionCtrl.text.trim(),
-        salary: salary,
-        phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
-        address: _addressCtrl.text.trim().isEmpty ? null : _addressCtrl.text.trim(),
-        isActive: _isActive,
-        createdAt: now,
-        updatedAt: now,
-      );
-      await ref.read(employeeRepositoryProvider).updateEmployee(emp);
-    } else {
-      final emp = Employee(
-        id: const Uuid().v4(),
-        position: _positionCtrl.text.trim(),
-        salary: salary,
-        phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
-        address: _addressCtrl.text.trim().isEmpty ? null : _addressCtrl.text.trim(),
-        isActive: _isActive,
-        createdAt: now,
-        updatedAt: now,
-      );
-      await ref.read(employeeRepositoryProvider).createEmployee(emp);
-    }
+      if (widget.employeeId != null) {
+        final existing = await ref
+            .read(employeeRepositoryProvider)
+            .getEmployeeById(widget.employeeId!);
+        final createdAt = existing.when(
+          success: (emp) => emp?.createdAt ?? now,
+          error: (_) => now,
+        );
 
-    if (mounted) {
-      ref.invalidate(employeesProvider);
-      context.pop();
+        final emp = Employee(
+          id: widget.employeeId!,
+          position: _positionCtrl.text.trim(),
+          salary: salary,
+          phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
+          address: _addressCtrl.text.trim().isEmpty
+              ? null
+              : _addressCtrl.text.trim(),
+          isActive: _isActive,
+          createdAt: createdAt,
+          updatedAt: now,
+        );
+        await ref.read(employeeRepositoryProvider).updateEmployee(emp);
+      } else {
+        final emp = Employee(
+          id: const Uuid().v4(),
+          position: _positionCtrl.text.trim(),
+          salary: salary,
+          phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
+          address: _addressCtrl.text.trim().isEmpty
+              ? null
+              : _addressCtrl.text.trim(),
+          isActive: _isActive,
+          createdAt: now,
+          updatedAt: now,
+        );
+        await ref.read(employeeRepositoryProvider).createEmployee(emp);
+      }
+
+      if (mounted) {
+        ref.invalidate(employeesProvider);
+        context.pop();
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -95,7 +116,9 @@ class _EmployeeFormPageState extends ConsumerState<EmployeeFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.employeeId != null ? 'Edit Employee' : 'Add Employee'),
+        title: Text(
+          widget.employeeId != null ? 'Edit Employee' : 'Add Employee',
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -104,25 +127,39 @@ class _EmployeeFormPageState extends ConsumerState<EmployeeFormPage> {
           children: [
             TextFormField(
               controller: _positionCtrl,
-              decoration: const InputDecoration(labelText: 'Position *', border: OutlineInputBorder()),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              decoration: const InputDecoration(
+                labelText: 'Position *',
+                border: OutlineInputBorder(),
+              ),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Required' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _salaryCtrl,
-              decoration: const InputDecoration(labelText: 'Salary', border: OutlineInputBorder(), prefixText: '\$ '),
+              decoration: const InputDecoration(
+                labelText: 'Salary',
+                border: OutlineInputBorder(),
+                prefixText: '\$ ',
+              ),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _phoneCtrl,
-              decoration: const InputDecoration(labelText: 'Phone', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Phone',
+                border: OutlineInputBorder(),
+              ),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _addressCtrl,
-              decoration: const InputDecoration(labelText: 'Address', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Address',
+                border: OutlineInputBorder(),
+              ),
               maxLines: 2,
             ),
             const SizedBox(height: 16),

@@ -12,9 +12,7 @@ class RoleListPage extends ConsumerWidget {
     final rolesAsync = ref.watch(rolesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Roles & Permissions'),
-      ),
+      appBar: AppBar(title: const Text('Roles & Permissions')),
       body: rolesAsync.when(
         data: (roles) {
           if (roles.isEmpty) {
@@ -34,7 +32,7 @@ class RoleListPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/roles/add'),
+        onPressed: () => context.push('/roles/add'),
         child: const Icon(Icons.add),
       ),
     );
@@ -58,21 +56,31 @@ class _RoleLevelCard extends StatelessWidget {
 
   String get _levelLabel {
     switch (level) {
-      case 0: return 'System';
-      case 1: return 'Boss';
-      case 2: return 'Manager';
-      case 3: return 'Employee';
-      default: return 'Level $level';
+      case 0:
+        return 'System';
+      case 1:
+        return 'Boss';
+      case 2:
+        return 'Manager';
+      case 3:
+        return 'Employee';
+      default:
+        return 'Level $level';
     }
   }
 
   Color get _levelColor {
     switch (level) {
-      case 0: return AppColors.error;
-      case 1: return AppColors.primary;
-      case 2: return AppColors.secondary;
-      case 3: return AppColors.accent;
-      default: return AppColors.info;
+      case 0:
+        return AppColors.error;
+      case 1:
+        return AppColors.primary;
+      case 2:
+        return AppColors.secondary;
+      case 3:
+        return AppColors.accent;
+      default:
+        return AppColors.info;
     }
   }
 
@@ -88,7 +96,10 @@ class _RoleLevelCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: _levelColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
@@ -105,27 +116,28 @@ class _RoleLevelCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            ...roles.map((role) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(
-                role.isSystem ? Icons.shield : Icons.person,
-                color: _levelColor,
+            ...roles.map(
+              (role) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  role.isSystem ? Icons.shield : Icons.person,
+                  color: _levelColor,
+                ),
+                title: Text(role.label),
+                subtitle: Text(role.name, style: const TextStyle(fontSize: 12)),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (role.isSystem) const Icon(Icons.lock_outline, size: 16),
+                    if (!role.isSystem)
+                      IconButton(
+                        icon: const Icon(Icons.edit, size: 18),
+                        onPressed: () => context.push('/roles/${role.id}/edit'),
+                      ),
+                  ],
+                ),
               ),
-              title: Text(role.label),
-              subtitle: Text(role.name, style: const TextStyle(fontSize: 12)),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (role.isSystem)
-                    const Icon(Icons.lock_outline, size: 16, color: AppColors.textHint),
-                  if (!role.isSystem)
-                    IconButton(
-                      icon: const Icon(Icons.edit, size: 18),
-                      onPressed: () => context.go('/roles/${role.id}/edit'),
-                    ),
-                ],
-              ),
-            )),
+            ),
           ],
         ),
       ),

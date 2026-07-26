@@ -12,9 +12,7 @@ class LowStockPage extends ConsumerWidget {
     final lowStockAsync = ref.watch(lowStockProductsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Low Stock Alerts'),
-      ),
+      appBar: AppBar(title: const Text('Low Stock Alerts')),
       body: lowStockAsync.when(
         data: (products) {
           if (products.isEmpty) {
@@ -24,8 +22,10 @@ class LowStockPage extends ConsumerWidget {
                 children: [
                   Icon(Icons.check_circle, size: 64, color: AppColors.success),
                   SizedBox(height: 16),
-                  Text('All products are well-stocked!',
-                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary)),
+                  Text(
+                    'All products are well-stocked!',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ],
               ),
             );
@@ -36,14 +36,19 @@ class LowStockPage extends ConsumerWidget {
             itemBuilder: (context, index) {
               final product = products[index];
               final ratio = product.minStock > 0
-                  ? (product.stockQty / product.minStock * 100).toStringAsFixed(0)
+                  ? (product.stockQty / product.minStock * 100).toStringAsFixed(
+                      0,
+                    )
                   : '0';
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor: AppColors.warning.withValues(alpha: 0.1),
-                    child: const Icon(Icons.warning_amber, color: AppColors.warning),
+                    child: const Icon(
+                      Icons.warning_amber,
+                      color: AppColors.warning,
+                    ),
                   ),
                   title: Text(product.name),
                   subtitle: Text(
@@ -51,7 +56,8 @@ class LowStockPage extends ConsumerWidget {
                     style: const TextStyle(fontSize: 12),
                   ),
                   trailing: TextButton(
-                    onPressed: () => context.go('/inventory/stock/add', extra: product.id),
+                    onPressed: () =>
+                        context.push('/inventory/stock/add', extra: product.id),
                     child: const Text('Add Stock'),
                   ),
                 ),

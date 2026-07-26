@@ -13,7 +13,10 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl(this._dataSource, this._categoryDataSource);
 
   @override
-  Future<Result<List<Product>>> getAllProducts({String? categoryId, String? searchQuery}) async {
+  Future<Result<List<Product>>> getAllProducts({
+    String? categoryId,
+    String? searchQuery,
+  }) async {
     try {
       final products = await _dataSource.getAllProducts(
         categoryId: categoryId,
@@ -46,7 +49,10 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Result<Product>> createProduct(Product product, {List<ProductAttribute>? attributes}) async {
+  Future<Result<Product>> createProduct(
+    Product product, {
+    List<ProductAttribute>? attributes,
+  }) async {
     try {
       await _dataSource.insertProduct(product);
       if (attributes != null) {
@@ -61,7 +67,10 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Result<Product>> updateProduct(Product product, {List<ProductAttribute>? attributes}) async {
+  Future<Result<Product>> updateProduct(
+    Product product, {
+    List<ProductAttribute>? attributes,
+  }) async {
     try {
       await _dataSource.updateProduct(product);
       if (attributes != null) {
@@ -98,7 +107,9 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Result<List<ProductAttribute>>> getProductAttributes(String productId) async {
+  Future<Result<List<ProductAttribute>>> getProductAttributes(
+    String productId,
+  ) async {
     try {
       final attributes = await _dataSource.getProductAttributes(productId);
       return Success(attributes);
@@ -111,10 +122,11 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Result<String>> generateSku(String categoryId) async {
     try {
       final category = await _categoryDataSource.getCategoryById(categoryId);
-      final prefix = category != null
+      final prefix = category != null && category.name.length >= 3
           ? category.name.substring(0, 3).toUpperCase()
-          : 'PRD';
-      final sku = '$prefix-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
+          : (category != null ? category.name.toUpperCase() : 'PRD');
+      final sku =
+          '$prefix-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
       return Success(sku);
     } catch (e) {
       return Error(DatabaseFailure('Failed to generate SKU: $e'));

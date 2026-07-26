@@ -13,17 +13,20 @@ class ProfilePage extends ConsumerStatefulWidget {
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
+  final _usernameCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     final user = ref.read(authProvider).user;
     if (user != null) _nameCtrl.text = user.fullName;
+    if (user != null) _usernameCtrl.text = user.username;
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
+    _usernameCtrl.dispose();
     super.dispose();
   }
 
@@ -57,20 +60,30 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 child: Text(
                   (user?.fullName ?? '?')[0].toUpperCase(),
-                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 24),
             TextFormField(
               controller: _nameCtrl,
-              decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder()),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              decoration: const InputDecoration(
+                labelText: 'Full Name',
+                border: OutlineInputBorder(),
+              ),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Required' : null,
             ),
             const SizedBox(height: 16),
             TextField(
-              controller: TextEditingController(text: user?.username ?? ''),
-              decoration: const InputDecoration(labelText: 'Username', border: OutlineInputBorder()),
+              controller: _usernameCtrl,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+                border: OutlineInputBorder(),
+              ),
               enabled: false,
             ),
             const SizedBox(height: 24),

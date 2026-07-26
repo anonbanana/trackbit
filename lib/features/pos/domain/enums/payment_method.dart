@@ -1,17 +1,20 @@
 enum PaymentMethod {
   cash,
-  card,
   transfer;
 
   String get label {
     switch (this) {
-      case PaymentMethod.cash: return 'Cash';
-      case PaymentMethod.card: return 'Card';
-      case PaymentMethod.transfer: return 'Bank Transfer';
+      case PaymentMethod.cash:
+        return 'Cash';
+      case PaymentMethod.transfer:
+        return 'Transfer via Bank';
     }
   }
 
   static PaymentMethod fromString(String value) {
-    return PaymentMethod.values.firstWhere((e) => e.name == value);
+    return PaymentMethod.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => PaymentMethod.cash,
+    );
   }
 }

@@ -33,16 +33,18 @@ class CrmRepositoryImpl implements CrmRepository {
   @override
   Future<Result<Customer>> createCustomer(Customer customer) async {
     try {
-      await _dataSource.insertCustomer(db.CustomersCompanion(
-        id: Value(customer.id),
-        name: Value(customer.name),
-        phone: Value(customer.phone),
-        email: Value(customer.email),
-        address: Value(customer.address),
-        loyaltyPoints: Value(customer.loyaltyPoints),
-        createdAt: Value(customer.createdAt),
-        updatedAt: Value(customer.updatedAt),
-      ));
+      await _dataSource.insertCustomer(
+        db.CustomersCompanion(
+          id: Value(customer.id),
+          name: Value(customer.name),
+          phone: Value(customer.phone),
+          email: Value(customer.email),
+          address: Value(customer.address),
+          loyaltyPoints: Value(customer.loyaltyPoints),
+          createdAt: Value(customer.createdAt),
+          updatedAt: Value(customer.updatedAt),
+        ),
+      );
       return Success(customer);
     } catch (e) {
       return Error(DatabaseFailure('Failed to create customer: $e'));
@@ -52,14 +54,17 @@ class CrmRepositoryImpl implements CrmRepository {
   @override
   Future<Result<Customer>> updateCustomer(Customer customer) async {
     try {
-      await _dataSource.updateCustomer(db.CustomersCompanion(
-        name: Value(customer.name),
-        phone: Value(customer.phone),
-        email: Value(customer.email),
-        address: Value(customer.address),
-        loyaltyPoints: Value(customer.loyaltyPoints),
-        updatedAt: Value(DateTime.now()),
-      ), customer.id);
+      await _dataSource.updateCustomer(
+        db.CustomersCompanion(
+          name: Value(customer.name),
+          phone: Value(customer.phone),
+          email: Value(customer.email),
+          address: Value(customer.address),
+          loyaltyPoints: Value(customer.loyaltyPoints),
+          updatedAt: Value(DateTime.now()),
+        ),
+        customer.id,
+      );
       return Success(customer);
     } catch (e) {
       return Error(DatabaseFailure('Failed to update customer: $e'));
@@ -77,7 +82,9 @@ class CrmRepositoryImpl implements CrmRepository {
   }
 
   @override
-  Future<Result<List<Map<String, dynamic>>>> getCustomerPurchaseHistory(String customerId) async {
+  Future<Result<List<Map<String, dynamic>>>> getCustomerPurchaseHistory(
+    String customerId,
+  ) async {
     try {
       final history = await _dataSource.getCustomerPurchaseHistory(customerId);
       return Success(history);
@@ -87,7 +94,10 @@ class CrmRepositoryImpl implements CrmRepository {
   }
 
   @override
-  Future<Result<void>> addLoyaltyPoints(String customerId, double points) async {
+  Future<Result<void>> addLoyaltyPoints(
+    String customerId,
+    double points,
+  ) async {
     try {
       await _dataSource.addLoyaltyPoints(customerId, points);
       return const Success(null);

@@ -15,4 +15,9 @@ abstract class AuthRepository {
   Future<Result<List<AppUser>>> getAllUsers();
   Future<Result<void>> updateUser(AppUser user);
   Future<Result<void>> deleteUser(String id);
+  Future<Result<void>> changePassword(
+    String userId,
+    String currentPassword,
+    String newPassword,
+  );
 }

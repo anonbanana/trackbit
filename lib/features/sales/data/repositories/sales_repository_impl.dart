@@ -10,19 +10,29 @@ class SalesRepositoryImpl implements SalesRepository {
   SalesRepositoryImpl(this._dataSource);
 
   @override
-  Future<Result<List<OrderSummary>>> getAllOrders({String? status, String? searchQuery}) async {
+  Future<Result<List<OrderSummary>>> getAllOrders({
+    String? status,
+    String? searchQuery,
+  }) async {
     try {
-      final data = await _dataSource.getAllOrders(status: status, searchQuery: searchQuery);
-      final orders = data.map((d) => OrderSummary(
-        id: d['id'] as String,
-        orderNumber: d['orderNumber'] as String,
-        customerName: d['customerName'] as String?,
-        total: (d['total'] as num).toDouble(),
-        paymentMethod: d['paymentMethod'] as String,
-        status: d['status'] as String,
-        itemCount: d['itemCount'] as int,
-        createdAt: d['createdAt'] as DateTime,
-      )).toList();
+      final data = await _dataSource.getAllOrders(
+        status: status,
+        searchQuery: searchQuery,
+      );
+      final orders = data
+          .map(
+            (d) => OrderSummary(
+              id: d['id'] as String,
+              orderNumber: d['orderNumber'] as String,
+              customerName: d['customerName'] as String?,
+              total: (d['total'] as num).toDouble(),
+              paymentMethod: d['paymentMethod'] as String,
+              status: d['status'] as String,
+              itemCount: d['itemCount'] as int,
+              createdAt: d['createdAt'] as DateTime,
+            ),
+          )
+          .toList();
       return Success(orders);
     } catch (e) {
       return Error(DatabaseFailure('Failed to load orders: $e'));
@@ -36,14 +46,18 @@ class SalesRepositoryImpl implements SalesRepository {
       if (data == null) return const Success(null);
 
       final itemsData = data['items'] as List<dynamic>;
-      final items = itemsData.map((i) => OrderDetailItem(
-        id: i['id'] as String,
-        productName: i['productName'] as String,
-        quantity: (i['quantity'] as num).toDouble(),
-        unit: i['unit'] as String,
-        unitPrice: (i['unitPrice'] as num).toDouble(),
-        subtotal: (i['subtotal'] as num).toDouble(),
-      )).toList();
+      final items = itemsData
+          .map(
+            (i) => OrderDetailItem(
+              id: i['id'] as String,
+              productName: i['productName'] as String,
+              quantity: (i['quantity'] as num).toDouble(),
+              unit: i['unit'] as String,
+              unitPrice: (i['unitPrice'] as num).toDouble(),
+              subtotal: (i['subtotal'] as num).toDouble(),
+            ),
+          )
+          .toList();
 
       final detail = OrderDetail(
         id: data['id'] as String,

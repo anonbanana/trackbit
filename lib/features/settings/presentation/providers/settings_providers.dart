@@ -13,7 +13,14 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   return SettingsRepositoryImpl(ref.watch(settingsDataSourceProvider));
 });
 
-final receiptSettingsProvider = FutureProvider<domain.ReceiptSettings>((ref) async {
-  final result = await ref.watch(settingsRepositoryProvider).getReceiptSettings();
-  return result.when(success: (d) => d, error: (f) => throw Exception(f.message));
+final receiptSettingsProvider = FutureProvider<domain.ReceiptSettings>((
+  ref,
+) async {
+  final result = await ref
+      .watch(settingsRepositoryProvider)
+      .getReceiptSettings();
+  return result.when(
+    success: (d) => d,
+    error: (f) => throw Exception(f.message),
+  );
 });

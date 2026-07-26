@@ -23,7 +23,9 @@ class StockMovementRepositoryImpl implements StockMovementRepository {
   }
 
   @override
-  Future<Result<List<StockMovement>>> getMovementsByProduct(String productId) async {
+  Future<Result<List<StockMovement>>> getMovementsByProduct(
+    String productId,
+  ) async {
     try {
       final movements = await _dataSource.getMovementsByProduct(productId);
       return Success(movements);
@@ -35,9 +37,11 @@ class StockMovementRepositoryImpl implements StockMovementRepository {
   @override
   Future<Result<StockMovement>> createMovement(StockMovement movement) async {
     try {
-      final product = await _productDataSource.getProductById(movement.productId);
+      final product = await _productDataSource.getProductById(
+        movement.productId,
+      );
       if (product == null) {
-        return Error(DatabaseFailure('Product not found'));
+        return const Error(DatabaseFailure('Product not found'));
       }
 
       double newQty = product.stockQty;
@@ -45,8 +49,10 @@ class StockMovementRepositoryImpl implements StockMovementRepository {
         case MovementType.stockIn:
           newQty += movement.quantity;
         case MovementType.stockOut:
+          if (movement.quantity > product.stockQty) {
+            return const Error(DatabaseFailure('Insufficient stock'));
+          }
           newQty -= movement.quantity;
-          if (newQty < 0) newQty = 0;
         case MovementType.adjustment:
           newQty = movement.quantity;
       }

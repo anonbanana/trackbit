@@ -35,17 +35,19 @@ class InvoicingRepositoryImpl implements InvoicingRepository {
   @override
   Future<Result<Invoice>> createInvoice(Invoice invoice) async {
     try {
-      await _dataSource.insertInvoice(db.InvoicesCompanion(
-        id: Value(invoice.id),
-        invoiceNumber: Value(invoice.invoiceNumber),
-        orderId: Value(invoice.orderId),
-        customerId: Value(invoice.customerId),
-        dueDate: Value(invoice.dueDate),
-        status: Value(invoice.status),
-        total: Value(invoice.total),
-        createdAt: Value(invoice.createdAt),
-        updatedAt: Value(invoice.updatedAt),
-      ));
+      await _dataSource.insertInvoice(
+        db.InvoicesCompanion(
+          id: Value(invoice.id),
+          invoiceNumber: Value(invoice.invoiceNumber),
+          orderId: Value(invoice.orderId),
+          customerId: Value(invoice.customerId),
+          dueDate: Value(invoice.dueDate),
+          status: Value(invoice.status),
+          total: Value(invoice.total),
+          createdAt: Value(invoice.createdAt),
+          updatedAt: Value(invoice.updatedAt),
+        ),
+      );
       return Success(invoice);
     } catch (e) {
       return Error(DatabaseFailure('Failed to create invoice: $e'));
@@ -55,15 +57,18 @@ class InvoicingRepositoryImpl implements InvoicingRepository {
   @override
   Future<Result<Invoice>> updateInvoice(Invoice invoice) async {
     try {
-      await _dataSource.updateInvoice(db.InvoicesCompanion(
-        invoiceNumber: Value(invoice.invoiceNumber),
-        orderId: Value(invoice.orderId),
-        customerId: Value(invoice.customerId),
-        dueDate: Value(invoice.dueDate),
-        status: Value(invoice.status),
-        total: Value(invoice.total),
-        updatedAt: Value(DateTime.now()),
-      ), invoice.id);
+      await _dataSource.updateInvoice(
+        db.InvoicesCompanion(
+          invoiceNumber: Value(invoice.invoiceNumber),
+          orderId: Value(invoice.orderId),
+          customerId: Value(invoice.customerId),
+          dueDate: Value(invoice.dueDate),
+          status: Value(invoice.status),
+          total: Value(invoice.total),
+          updatedAt: Value(DateTime.now()),
+        ),
+        invoice.id,
+      );
       return Success(invoice);
     } catch (e) {
       return Error(DatabaseFailure('Failed to update invoice: $e'));
@@ -85,42 +90,47 @@ class InvoicingRepositoryImpl implements InvoicingRepository {
     try {
       final data = await _dataSource.getOrderWithDetails(orderId);
       if (data == null) {
-        return Error(DatabaseFailure('Order not found'));
+        return const Error(DatabaseFailure('Order not found'));
       }
 
       final order = data['order'] as db.Order;
       final customerName = data['customerName'] as String?;
       final items = data['items'] as List<db.OrderItem>;
       final count = await _dataSource.getInvoiceCount();
-      final invoiceNumber = 'INV-${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}-${(count + 1).toString().padLeft(4, '0')}';
+      final invoiceNumber =
+          'INV-${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}-${(count + 1).toString().padLeft(4, '0')}';
 
       final invoiceId = _uuid.v4();
       final now = DateTime.now();
       final dueDate = now.add(const Duration(days: 30));
 
-      await _dataSource.insertInvoice(db.InvoicesCompanion(
-        id: Value(invoiceId),
-        invoiceNumber: Value(invoiceNumber),
-        orderId: Value(orderId),
-        customerId: Value(order.customerId),
-        dueDate: Value(dueDate),
-        status: Value('pending'),
-        total: Value(order.total),
-        createdAt: Value(now),
-        updatedAt: Value(now),
-      ));
+      await _dataSource.insertInvoice(
+        db.InvoicesCompanion(
+          id: Value(invoiceId),
+          invoiceNumber: Value(invoiceNumber),
+          orderId: Value(orderId),
+          customerId: Value(order.customerId),
+          dueDate: Value(dueDate),
+          status: const Value('pending'),
+          total: Value(order.total),
+          createdAt: Value(now),
+          updatedAt: Value(now),
+        ),
+      );
 
       for (final item in items) {
         final productName = await _dataSource.getProductName(item.productId);
         final desc = productName ?? 'Product';
-        await _dataSource.insertInvoiceItem(db.InvoiceItemsCompanion(
-          id: Value(_uuid.v4()),
-          invoiceId: Value(invoiceId),
-          description: Value(desc),
-          quantity: Value(item.quantity),
-          unitPrice: Value(item.unitPrice),
-          total: Value(item.subtotal),
-        ));
+        await _dataSource.insertInvoiceItem(
+          db.InvoiceItemsCompanion(
+            id: Value(_uuid.v4()),
+            invoiceId: Value(invoiceId),
+            description: Value(desc),
+            quantity: Value(item.quantity),
+            unitPrice: Value(item.unitPrice),
+            total: Value(item.subtotal),
+          ),
+        );
       }
 
       final invoice = Invoice(
@@ -145,14 +155,20 @@ class InvoicingRepositoryImpl implements InvoicingRepository {
   Future<Result<List<InvoiceItem>>> getInvoiceItems(String invoiceId) async {
     try {
       final data = await _dataSource.getInvoiceItems(invoiceId);
-      return Success(data.map((i) => InvoiceItem(
-        id: i.id,
-        invoiceId: i.invoiceId,
-        description: i.description,
-        quantity: i.quantity,
-        unitPrice: i.unitPrice,
-        total: i.total,
-      )).toList());
+      return Success(
+        data
+            .map(
+              (i) => InvoiceItem(
+                id: i.id,
+                invoiceId: i.invoiceId,
+                description: i.description,
+                quantity: i.quantity,
+                unitPrice: i.unitPrice,
+                total: i.total,
+              ),
+            )
+            .toList(),
+      );
     } catch (e) {
       return Error(DatabaseFailure('Failed to load invoice items: $e'));
     }
@@ -162,7 +178,8 @@ class InvoicingRepositoryImpl implements InvoicingRepository {
   Future<Result<String>> getNextInvoiceNumber() async {
     try {
       final count = await _dataSource.getInvoiceCount();
-      final number = 'INV-${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}-${(count + 1).toString().padLeft(4, '0')}';
+      final number =
+          'INV-${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}-${(count + 1).toString().padLeft(4, '0')}';
       return Success(number);
     } catch (e) {
       return Error(DatabaseFailure('Failed to generate number: $e'));

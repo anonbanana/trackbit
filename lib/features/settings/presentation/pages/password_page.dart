@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,28 +32,31 @@ class _PasswordPageState extends ConsumerState<PasswordPage> {
     final user = ref.read(authProvider).user;
     if (user == null) return;
 
-    final currentHash = sha256.convert(utf8.encode(_currentCtrl.text)).toString();
-    if (currentHash != user.passwordHash) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Current password is incorrect')),
-        );
-      }
-      setState(() => _isLoading = false);
-      return;
-    }
-
-    final newHash = sha256.convert(utf8.encode(_newCtrl.text)).toString();
     final repo = ref.read(authRepositoryProvider);
-    final updated = user.copyWith(passwordHash: newHash);
-    await repo.updateUser(updated);
+    final result = await repo.changePassword(
+      user.id,
+      _currentCtrl.text,
+      _newCtrl.text,
+    );
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password changed successfully')),
-      );
-      context.pop();
-    }
+    result.when(
+      success: (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password changed successfully')),
+          );
+          context.pop();
+        }
+      },
+      error: (failure) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(failure.message)));
+        }
+        setState(() => _isLoading = false);
+      },
+    );
   }
 
   @override
@@ -69,14 +70,20 @@ class _PasswordPageState extends ConsumerState<PasswordPage> {
           children: [
             TextFormField(
               controller: _currentCtrl,
-              decoration: const InputDecoration(labelText: 'Current Password', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Current Password',
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
               validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _newCtrl,
-              decoration: const InputDecoration(labelText: 'New Password', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'New Password',
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Required';
@@ -87,7 +94,10 @@ class _PasswordPageState extends ConsumerState<PasswordPage> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _confirmCtrl,
-              decoration: const InputDecoration(labelText: 'Confirm New Password', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Confirm New Password',
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
               validator: (v) {
                 if (v != _newCtrl.text) return 'Passwords do not match';

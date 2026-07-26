@@ -26,7 +26,11 @@ class Validators {
     return null;
   }
 
-  static String? minLength(String? value, int min, [String field = 'Password']) {
+  static String? minLength(
+    String? value,
+    int min, [
+    String field = 'Password',
+  ]) {
     if (value != null && value.length < min) {
       return '$field must be at least $min characters';
     }

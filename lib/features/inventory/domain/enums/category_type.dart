@@ -9,13 +9,20 @@ enum CategoryType {
 
   String get label {
     switch (this) {
-      case CategoryType.food: return 'Food';
-      case CategoryType.clothing: return 'Clothing';
-      case CategoryType.electronics: return 'Electronics';
-      case CategoryType.gaming: return 'Gaming';
-      case CategoryType.optical: return 'Optical';
-      case CategoryType.luggage: return 'Luggage';
-      case CategoryType.custom: return 'Custom';
+      case CategoryType.food:
+        return 'Food';
+      case CategoryType.clothing:
+        return 'Clothing';
+      case CategoryType.electronics:
+        return 'Electronics';
+      case CategoryType.gaming:
+        return 'Gaming';
+      case CategoryType.optical:
+        return 'Optical';
+      case CategoryType.luggage:
+        return 'Luggage';
+      case CategoryType.custom:
+        return 'Custom';
     }
   }
 

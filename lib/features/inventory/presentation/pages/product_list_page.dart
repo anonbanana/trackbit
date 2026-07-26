@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/inventory_providers.dart';
 import '../../../../core/constants/app_colors.dart';
+
 class ProductListPage extends ConsumerStatefulWidget {
   const ProductListPage({super.key});
 
@@ -23,7 +24,9 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
   @override
   Widget build(BuildContext context) {
     final productsAsync = ref.watch(
-      _searchQuery.isEmpty ? productsProvider : searchedProductsProvider(_searchQuery),
+      _searchQuery.isEmpty
+          ? productsProvider
+          : searchedProductsProvider(_searchQuery),
     );
     final lowStockAsync = ref.watch(lowStockProductsProvider);
 
@@ -33,7 +36,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.inventory_2),
-            onPressed: () => context.go('/inventory/stock'),
+            onPressed: () => context.push('/inventory/stock'),
             tooltip: 'Stock Movements',
           ),
         ],
@@ -64,7 +67,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
             data: (lowStock) {
               if (lowStock.isEmpty) return const SizedBox.shrink();
               return GestureDetector(
-                onTap: () => context.go('/inventory/alerts'),
+                onTap: () => context.push('/inventory/alerts'),
                 child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.all(16),
@@ -72,7 +75,9 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                   decoration: BoxDecoration(
                     color: AppColors.warning.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: AppColors.warning.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -80,10 +85,17 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                       const SizedBox(width: 8),
                       Text(
                         '${lowStock.length} product(s) low on stock',
-                        style: const TextStyle(color: AppColors.warning, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                          color: AppColors.warning,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const Spacer(),
-                      const Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.warning),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 14,
+                        color: AppColors.warning,
+                      ),
                     ],
                   ),
                 ),
@@ -112,7 +124,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                               : AppColors.textHint.withValues(alpha: 0.1),
                           child: Icon(
                             Icons.inventory_2,
-                            color: product.isActive ? AppColors.primary : AppColors.textHint,
+                            color: product.isActive ? AppColors.primary : null,
                           ),
                         ),
                         title: Text(product.name),
@@ -124,21 +136,39 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (product.isLowStock)
-                              const Icon(Icons.warning_amber, size: 18, color: AppColors.warning),
+                              const Icon(
+                                Icons.warning_amber,
+                                size: 18,
+                                color: AppColors.warning,
+                              ),
                             if (!product.isActive)
-                              const Icon(Icons.visibility_off, size: 18, color: AppColors.textHint),
+                              const Icon(Icons.visibility_off, size: 18),
                             const SizedBox(width: 8),
                             PopupMenuButton(
                               itemBuilder: (context) => [
-                                const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                                const PopupMenuItem(value: 'stock', child: Text('Stock Movement')),
-                                const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                                const PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text('Edit'),
+                                ),
+                                const PopupMenuItem(
+                                  value: 'stock',
+                                  child: Text('Stock Movement'),
+                                ),
+                                const PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text('Delete'),
+                                ),
                               ],
                               onSelected: (v) async {
                                 if (v == 'edit') {
-                                  context.go('/inventory/products/${product.id}/edit');
+                                  context.push(
+                                    '/inventory/products/${product.id}/edit',
+                                  );
                                 } else if (v == 'stock') {
-                                  context.go('/inventory/stock/add', extra: product.id);
+                                  context.push(
+                                    '/inventory/stock/add',
+                                    extra: product.id,
+                                  );
                                 } else if (v == 'delete') {
                                   await _deleteProduct(product.id);
                                 }
@@ -146,7 +176,9 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                             ),
                           ],
                         ),
-                        onTap: () => context.go('/inventory/products/${product.id}/edit'),
+                        onTap: () => context.push(
+                          '/inventory/products/${product.id}/edit',
+                        ),
                       ),
                     );
                   },
@@ -159,7 +191,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/inventory/products/add'),
+        onPressed: () => context.push('/inventory/products/add'),
         child: const Icon(Icons.add),
       ),
     );
@@ -172,8 +204,14 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
         title: const Text('Delete Product'),
         content: const Text('Delete this product?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete'),
+          ),
         ],
       ),
     );
@@ -182,14 +220,16 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
       final result = await repo.deleteProduct(id);
       result.when(
         success: (_) => ref.invalidate(productsProvider),
-        error: (f) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${f.message}')),
-        ),
+        error: (f) => ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${f.message}'))),
       );
     }
   }
 
   String _formatQty(double qty) {
-    return qty == qty.roundToDouble() ? qty.toInt().toString() : qty.toStringAsFixed(2);
+    return qty == qty.roundToDouble()
+        ? qty.toInt().toString()
+        : qty.toStringAsFixed(2);
   }
 }

@@ -36,7 +36,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -47,7 +46,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.inventory_2,
                     size: 80,
                     color: AppColors.primary,
@@ -58,16 +57,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Business Management Simplified',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 48),
                   TextFormField(
@@ -120,12 +116,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                          const Icon(
+                            Icons.error_outline,
+                            color: AppColors.error,
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               authState.errorMessage!,
-                              style: const TextStyle(color: AppColors.error, fontSize: 14),
+                              style: const TextStyle(
+                                color: AppColors.error,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],
@@ -137,25 +140,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     onPressed: authState.status == AuthStatus.loading
                         ? null
                         : () {
-                      if (_formKey.currentState!.validate()) {
-                        ref.read(authProvider.notifier).login(
-                          _usernameController.text.trim(),
-                          _passwordController.text,
-                        );
-                      }
-                    },
+                            if (_formKey.currentState!.validate()) {
+                              ref
+                                  .read(authProvider.notifier)
+                                  .login(
+                                    _usernameController.text.trim(),
+                                    _passwordController.text,
+                                  );
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: authState.status == AuthStatus.loading
                         ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text('Sign In', style: TextStyle(fontSize: 16)),
                   ),
                   const SizedBox(height: 16),

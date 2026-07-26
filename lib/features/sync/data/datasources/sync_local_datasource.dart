@@ -7,15 +7,19 @@ class SyncLocalDataSource {
 
   Future<List<db.SyncQueueData>> getPendingEntries() async {
     return await (_database.select(_database.syncQueue)
-      ..where((t) => t.status.equals('PENDING'))
-      ..orderBy([(t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.asc)])
-    ).get();
+          ..where((t) => t.status.equals('PENDING'))
+          ..orderBy([
+            (t) =>
+                OrderingTerm(expression: t.createdAt, mode: OrderingMode.asc),
+          ]))
+        .get();
   }
 
   Future<List<db.SyncQueueData>> getAllEntries() async {
-    return await (_database.select(_database.syncQueue)
-      ..orderBy([(t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)])
-    ).get();
+    return await (_database.select(_database.syncQueue)..orderBy([
+          (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+        ]))
+        .get();
   }
 
   Future<void> insertEntry(db.SyncQueueCompanion entry) async {
@@ -23,18 +27,20 @@ class SyncLocalDataSource {
   }
 
   Future<void> updateStatus(int id) async {
-    await (_database.update(_database.syncQueue)
-      ..where((t) => t.id.equals(id))
-    ).write(db.SyncQueueCompanion(
-      status: const Value('SYNCED'),
-      syncedAt: Value(DateTime.now()),
-    ));
+    await (_database.update(
+      _database.syncQueue,
+    )..where((t) => t.id.equals(id))).write(
+      db.SyncQueueCompanion(
+        status: const Value('SYNCED'),
+        syncedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   Future<void> deleteSynced() async {
-    await (_database.delete(_database.syncQueue)
-      ..where((t) => t.status.equals('SYNCED'))
-    ).go();
+    await (_database.delete(
+      _database.syncQueue,
+    )..where((t) => t.status.equals('SYNCED'))).go();
   }
 
   Future<List<db.SyncPeer>> getPeers() async {

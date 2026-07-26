@@ -10,9 +10,7 @@ void main() {
   group('TrackBit App Integration Tests', () {
     testWidgets('App launches and shows login page', (tester) async {
       await tester.pumpWidget(
-        const UncontrolledProviderScope(
-          child: TrackBitApp(),
-        ),
+        const UncontrolledProviderScope(child: TrackBitApp()),
       );
 
       await tester.pumpAndSettle();
@@ -23,9 +21,7 @@ void main() {
 
     testWidgets('Login page has username and password fields', (tester) async {
       await tester.pumpWidget(
-        const UncontrolledProviderScope(
-          child: TrackBitApp(),
-        ),
+        const UncontrolledProviderScope(child: TrackBitApp()),
       );
 
       await tester.pumpAndSettle();
@@ -37,9 +33,7 @@ void main() {
 
     testWidgets('Dashboard displays navigation tiles', (tester) async {
       await tester.pumpWidget(
-        const UncontrolledProviderScope(
-          child: TrackBitApp(),
-        ),
+        const UncontrolledProviderScope(child: TrackBitApp()),
       );
 
       await tester.pumpAndSettle();

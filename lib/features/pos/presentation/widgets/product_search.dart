@@ -8,7 +8,8 @@ class ProductSearchWidget extends ConsumerStatefulWidget {
   const ProductSearchWidget({super.key, required this.onProductSelected});
 
   @override
-  ConsumerState<ProductSearchWidget> createState() => _ProductSearchWidgetState();
+  ConsumerState<ProductSearchWidget> createState() =>
+      _ProductSearchWidgetState();
 }
 
 class _ProductSearchWidgetState extends ConsumerState<ProductSearchWidget> {

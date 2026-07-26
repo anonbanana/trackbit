@@ -18,30 +18,39 @@ class PaymentSelector extends StatelessWidget {
       children: [
         Text('Payment Method', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
-        ...PaymentMethod.values.map((method) => Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: RadioListTile<PaymentMethod>(
-            title: Row(
-              children: [
-                Icon(_getIcon(method), size: 20),
-                const SizedBox(width: 8),
-                Text(method.label),
-              ],
-            ),
-            value: method,
-            groupValue: selectedMethod,
-            onChanged: (v) => onChanged(v ?? PaymentMethod.cash),
+        RadioGroup<PaymentMethod>(
+          groupValue: selectedMethod,
+          onChanged: (v) => onChanged(v ?? PaymentMethod.cash),
+          child: Column(
+            children: [
+              ...PaymentMethod.values.map(
+                (method) => Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: RadioListTile<PaymentMethod>(
+                    title: Row(
+                      children: [
+                        Icon(_getIcon(method), size: 20),
+                        const SizedBox(width: 8),
+                        Text(method.label),
+                      ],
+                    ),
+                    value: method,
+                  ),
+                ),
+              ),
+            ],
           ),
-        )),
+        ),
       ],
     );
   }
 
   IconData _getIcon(PaymentMethod method) {
     switch (method) {
-      case PaymentMethod.cash: return Icons.money;
-      case PaymentMethod.card: return Icons.credit_card;
-      case PaymentMethod.transfer: return Icons.account_balance;
+      case PaymentMethod.cash:
+        return Icons.money;
+      case PaymentMethod.transfer:
+        return Icons.account_balance;
     }
   }
 }

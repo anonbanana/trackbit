@@ -24,7 +24,11 @@ class DailySalesSummary extends Equatable {
   final double revenue;
   final int orders;
 
-  const DailySalesSummary({required this.date, required this.revenue, required this.orders});
+  const DailySalesSummary({
+    required this.date,
+    required this.revenue,
+    required this.orders,
+  });
 
   @override
   List<Object?> get props => [date, revenue, orders];

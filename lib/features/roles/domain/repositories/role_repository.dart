@@ -10,6 +10,9 @@ abstract class RoleRepository {
   Future<Result<void>> deleteRole(String id);
   Future<Result<List<Permission>>> getAllPermissions();
   Future<Result<List<String>>> getRolePermissionIds(String roleId);
-  Future<Result<void>> assignPermissionsToRole(String roleId, List<String> permissionIds);
+  Future<Result<void>> assignPermissionsToRole(
+    String roleId,
+    List<String> permissionIds,
+  );
   Future<Result<void>> initializeDefaultRoles();
 }

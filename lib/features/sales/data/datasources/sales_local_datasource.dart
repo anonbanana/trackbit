@@ -5,9 +5,14 @@ class SalesLocalDataSource {
   final db.AppDatabase _database;
   SalesLocalDataSource(this._database);
 
-  Future<List<Map<String, dynamic>>> getAllOrders({String? status, String? searchQuery}) async {
+  Future<List<Map<String, dynamic>>> getAllOrders({
+    String? status,
+    String? searchQuery,
+  }) async {
     var query = _database.select(_database.orders)
-      ..orderBy([(t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)]);
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+      ]);
 
     if (status != null && status.isNotEmpty) {
       query = query..where((t) => t.status.equals(status));
@@ -17,16 +22,16 @@ class SalesLocalDataSource {
     final results = <Map<String, dynamic>>[];
 
     for (final order in orders) {
-      final items = await (_database.select(_database.orderItems)
-        ..where((t) => t.orderId.equals(order.id)))
-        .get();
+      final items = await (_database.select(
+        _database.orderItems,
+      )..where((t) => t.orderId.equals(order.id))).get();
       final itemCount = items.length;
 
       String? customerName;
       if (order.customerId != null) {
-        final customer = await (_database.select(_database.customers)
-          ..where((t) => t.id.equals(order.customerId!)))
-          .getSingleOrNull();
+        final customer = await (_database.select(
+          _database.customers,
+        )..where((t) => t.id.equals(order.customerId!))).getSingleOrNull();
         customerName = customer?.name;
       }
 
@@ -53,30 +58,30 @@ class SalesLocalDataSource {
   }
 
   Future<Map<String, dynamic>?> getOrderDetail(String orderId) async {
-    final order = await (_database.select(_database.orders)
-      ..where((t) => t.id.equals(orderId)))
-      .getSingleOrNull();
+    final order = await (_database.select(
+      _database.orders,
+    )..where((t) => t.id.equals(orderId))).getSingleOrNull();
     if (order == null) return null;
 
     String? customerName;
     String? customerPhone;
     if (order.customerId != null) {
-      final customer = await (_database.select(_database.customers)
-        ..where((t) => t.id.equals(order.customerId!)))
-        .getSingleOrNull();
+      final customer = await (_database.select(
+        _database.customers,
+      )..where((t) => t.id.equals(order.customerId!))).getSingleOrNull();
       customerName = customer?.name;
       customerPhone = customer?.phone;
     }
 
-    final orderItems = await (_database.select(_database.orderItems)
-      ..where((t) => t.orderId.equals(orderId)))
-      .get();
+    final orderItems = await (_database.select(
+      _database.orderItems,
+    )..where((t) => t.orderId.equals(orderId))).get();
 
     final items = <Map<String, dynamic>>[];
     for (final item in orderItems) {
-      final product = await (_database.select(_database.products)
-        ..where((t) => t.id.equals(item.productId)))
-        .getSingleOrNull();
+      final product = await (_database.select(
+        _database.products,
+      )..where((t) => t.id.equals(item.productId))).getSingleOrNull();
       items.add({
         'id': item.id,
         'productName': product?.name ?? 'Unknown',
@@ -108,10 +113,11 @@ class SalesLocalDataSource {
   Future<double> getDailySalesTotal(DateTime date) async {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    final orders = await (_database.select(_database.orders)
-      ..where((t) => t.createdAt.isBetweenValues(start, end))
-      ..where((t) => t.status.equals('completed'))
-    ).get();
+    final orders =
+        await (_database.select(_database.orders)
+              ..where((t) => t.createdAt.isBetweenValues(start, end))
+              ..where((t) => t.status.equals('completed')))
+            .get();
     double total = 0;
     for (final o in orders) {
       total += o.total;
@@ -122,10 +128,11 @@ class SalesLocalDataSource {
   Future<double> getMonthlySalesTotal(int year, int month) async {
     final start = DateTime(year, month, 1);
     final end = DateTime(year, month + 1, 1);
-    final orders = await (_database.select(_database.orders)
-      ..where((t) => t.createdAt.isBetweenValues(start, end))
-      ..where((t) => t.status.equals('completed'))
-    ).get();
+    final orders =
+        await (_database.select(_database.orders)
+              ..where((t) => t.createdAt.isBetweenValues(start, end))
+              ..where((t) => t.status.equals('completed')))
+            .get();
     double total = 0;
     for (final o in orders) {
       total += o.total;
@@ -135,9 +142,9 @@ class SalesLocalDataSource {
 
   Future<int> getOrderCount({String? status}) async {
     if (status != null) {
-      final orders = await (_database.select(_database.orders)
-        ..where((t) => t.status.equals(status)))
-        .get();
+      final orders = await (_database.select(
+        _database.orders,
+      )..where((t) => t.status.equals(status))).get();
       return orders.length;
     }
     return await _database.select(_database.orders).get().then((r) => r.length);

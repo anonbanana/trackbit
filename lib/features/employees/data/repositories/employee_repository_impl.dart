@@ -34,18 +34,20 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   @override
   Future<Result<Employee>> createEmployee(Employee employee) async {
     try {
-      await _dataSource.insertEmployee(db.EmployeesCompanion(
-        id: Value(employee.id),
-        userId: Value(employee.userId),
-        position: Value(employee.position),
-        salary: Value(employee.salary),
-        hireDate: Value(employee.hireDate),
-        phone: Value(employee.phone),
-        address: Value(employee.address),
-        isActive: Value(employee.isActive),
-        createdAt: Value(employee.createdAt),
-        updatedAt: Value(employee.updatedAt),
-      ));
+      await _dataSource.insertEmployee(
+        db.EmployeesCompanion(
+          id: Value(employee.id),
+          userId: Value(employee.userId),
+          position: Value(employee.position),
+          salary: Value(employee.salary),
+          hireDate: Value(employee.hireDate),
+          phone: Value(employee.phone),
+          address: Value(employee.address),
+          isActive: Value(employee.isActive),
+          createdAt: Value(employee.createdAt),
+          updatedAt: Value(employee.updatedAt),
+        ),
+      );
       return Success(employee);
     } catch (e) {
       return Error(DatabaseFailure('Failed to create employee: $e'));
@@ -55,16 +57,19 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   @override
   Future<Result<Employee>> updateEmployee(Employee employee) async {
     try {
-      await _dataSource.updateEmployee(db.EmployeesCompanion(
-        userId: Value(employee.userId),
-        position: Value(employee.position),
-        salary: Value(employee.salary),
-        hireDate: Value(employee.hireDate),
-        phone: Value(employee.phone),
-        address: Value(employee.address),
-        isActive: Value(employee.isActive),
-        updatedAt: Value(DateTime.now()),
-      ), employee.id);
+      await _dataSource.updateEmployee(
+        db.EmployeesCompanion(
+          userId: Value(employee.userId),
+          position: Value(employee.position),
+          salary: Value(employee.salary),
+          hireDate: Value(employee.hireDate),
+          phone: Value(employee.phone),
+          address: Value(employee.address),
+          isActive: Value(employee.isActive),
+          updatedAt: Value(DateTime.now()),
+        ),
+        employee.id,
+      );
       return Success(employee);
     } catch (e) {
       return Error(DatabaseFailure('Failed to update employee: $e'));

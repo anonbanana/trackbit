@@ -10,7 +10,7 @@ extension DateTimeFormatting on DateTime {
 extension NumberFormatting on num {
   String get currency => NumberFormat('#,##0.00').format(this);
   String get compact => NumberFormat.compact().format(this);
-  String get percentage => '${this}%';
+  String get percentage => '$this%';
 }
 
 extension StringCapitalize on String {
