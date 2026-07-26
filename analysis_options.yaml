@@ -4,7 +4,6 @@ analyzer:
   errors:
     invalid_annotation_target: ignore
     avoid_print: error
-    experimental_member_use: ignore
   strict-casts: true
   strict-raw-types: true
   exclude:

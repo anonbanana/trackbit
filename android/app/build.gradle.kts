@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.trackbit.trackbit"
-    compileSdk = 36
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
