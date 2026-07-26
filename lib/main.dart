@@ -25,10 +25,7 @@ void main() async {
   }
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const TrackBitApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const TrackBitApp()),
   );
 }
 
@@ -44,14 +41,18 @@ Future<void> _seedAdminUser(AppDatabase db) async {
   final hash = sha256.convert(bytes).toString();
   final now = DateTime.now().toUtc();
 
-  await db.into(db.users).insert(UsersCompanion(
-    id: Value(const Uuid().v4()),
-    username: const Value(AppConstants.defaultAdminUsername),
-    passwordHash: Value(hash),
-    fullName: const Value('Administrator'),
-    roleId: Value(adminRole.id),
-    isActive: const Value(true),
-    createdAt: Value(now),
-    updatedAt: Value(now),
-  ));
+  await db
+      .into(db.users)
+      .insert(
+        UsersCompanion(
+          id: Value(const Uuid().v4()),
+          username: const Value(AppConstants.defaultAdminUsername),
+          passwordHash: Value(hash),
+          fullName: const Value('Administrator'),
+          roleId: Value(adminRole.id),
+          isActive: const Value(true),
+          createdAt: Value(now),
+          updatedAt: Value(now),
+        ),
+      );
 }

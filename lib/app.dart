@@ -17,8 +17,12 @@ class TrackBitApp extends ConsumerWidget {
     final isDark = themeMode == ThemeMode.dark;
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        systemNavigationBarColor: isDark ? AppColors.darkBackground : AppColors.background,
-        systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.background,
+        systemNavigationBarIconBrightness: isDark
+            ? Brightness.light
+            : Brightness.dark,
       ),
     );
 
