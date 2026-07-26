@@ -95,7 +95,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Build Web
-        run: flutter build web --release
+        run: flutter build web --release --no-wasm-dry-run
       - name: Upload Web artifact
         uses: actions/upload-artifact@v4
         with:

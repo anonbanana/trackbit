@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +35,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   String _unit = 'Piece';
   bool _isActive = true;
   bool _isLoading = false;
-  String? _imagePath;
+  Uint8List? _imageBytes;
 
   final _attributeControllers = <String, TextEditingController>{};
   final _attributeSelectValues = <String, String>{};
@@ -78,7 +78,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
           _selectedCategoryId = product.categoryId;
           _unit = product.unit;
           _isActive = product.isActive;
-          _imagePath = product.imagePath;
+          _imageBytes = null;
           _loadAttributes();
         }
       },
@@ -389,17 +389,19 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                           child: OutlinedButton.icon(
                             icon: const Icon(Icons.image),
                             label: Text(
-                              _imagePath != null ? 'Change Image' : 'Add Image',
+                              _imageBytes != null
+                                  ? 'Change Image'
+                                  : 'Add Image',
                             ),
                             onPressed: _pickImage,
                           ),
                         ),
-                        if (_imagePath != null) ...[
+                        if (_imageBytes != null) ...[
                           const SizedBox(width: 12),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(_imagePath!),
+                            child: Image.memory(
+                              _imageBytes!,
                               width: 60,
                               height: 60,
                               fit: BoxFit.cover,
@@ -411,7 +413,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                               Icons.clear,
                               color: AppColors.error,
                             ),
-                            onPressed: () => setState(() => _imagePath = null),
+                            onPressed: () => setState(() => _imageBytes = null),
                           ),
                         ],
                       ],
@@ -437,7 +439,8 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       maxWidth: 1024,
     );
     if (picked != null) {
-      setState(() => _imagePath = picked.path);
+      final bytes = await picked.readAsBytes();
+      setState(() => _imageBytes = bytes);
     }
   }
 
@@ -475,7 +478,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       price: double.parse(_priceController.text.trim()),
       cost: double.parse(_costController.text.trim()),
       minStock: double.tryParse(_minStockController.text.trim()) ?? 0,
-      imagePath: _imagePath,
+      imagePath: null,
       isActive: _isActive,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

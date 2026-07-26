@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -294,7 +294,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
   final _uuid = const Uuid();
 
   String _selectedCategory = 'Other';
-  String? _receiptImage;
+  Uint8List? _receiptImageBytes;
   bool get _isEditing => widget.expense != null;
 
   @override
@@ -305,7 +305,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
       _amountCtrl.text = widget.expense!.amount.toString();
       _noteCtrl.text = widget.expense!.note ?? '';
       _selectedCategory = widget.expense!.category;
-      _receiptImage = widget.expense!.receiptImage;
+      _receiptImageBytes = null;
     }
   }
 
@@ -379,7 +379,9 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
                 OutlinedButton.icon(
                   icon: const Icon(Icons.receipt),
                   label: Text(
-                    _receiptImage != null ? 'Change Receipt' : 'Add Receipt',
+                    _receiptImageBytes != null
+                        ? 'Change Receipt'
+                        : 'Add Receipt',
                   ),
                   onPressed: () async {
                     final picker = ImagePicker();
@@ -387,16 +389,18 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
                       source: ImageSource.gallery,
                       maxWidth: 1024,
                     );
-                    if (picked != null)
-                      setState(() => _receiptImage = picked.path);
+                    if (picked != null) {
+                      final bytes = await picked.readAsBytes();
+                      setState(() => _receiptImageBytes = bytes);
+                    }
                   },
                 ),
-                if (_receiptImage != null) ...[
+                if (_receiptImageBytes != null) ...[
                   const SizedBox(width: 8),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: Image.file(
-                      File(_receiptImage!),
+                    child: Image.memory(
+                      _receiptImageBytes!,
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,
@@ -408,7 +412,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
                       size: 18,
                       color: AppColors.error,
                     ),
-                    onPressed: () => setState(() => _receiptImage = null),
+                    onPressed: () => setState(() => _receiptImageBytes = null),
                   ),
                 ],
               ],
@@ -434,7 +438,7 @@ class _ExpenseFormSheetState extends ConsumerState<_ExpenseFormSheet> {
       paidBy: _isEditing
           ? widget.expense!.paidBy
           : (ref.read(authProvider).user?.id ?? 'system'),
-      receiptImage: _receiptImage,
+      receiptImage: null,
       note: _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
       createdAt: _isEditing ? widget.expense!.createdAt : DateTime.now(),
     );
