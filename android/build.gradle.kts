@@ -7,6 +7,11 @@ allprojects {
 
 subprojects {
     afterEvaluate {
+        if (plugins.hasPlugin("com.android.library")) {
+            extensions.configure<com.android.build.gradle.LibraryExtension> {
+                compileSdk = 36
+            }
+        }
         if (plugins.hasPlugin("org.jetbrains.kotlin.android")) {
             extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension> {
                 compilerOptions {
