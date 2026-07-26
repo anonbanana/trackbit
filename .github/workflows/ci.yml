@@ -22,7 +22,7 @@ jobs:
       - name: Check formatting
         run: dart format --set-exit-if-changed --output=none .
       - name: Analyze code
-        run: dart analyze lib/ --no-fatal-infos
+        run: dart analyze lib/
 
   test:
     name: Test
