@@ -3,7 +3,7 @@
 ## A Comprehensive Guide Based on "Every Programmer Should Know"
 
 **Project:** TrackBit - Offline-First Business Management Application  
-**Version:** 1.0.0  
+**Version:** 1.0.0 (Released)  
 **Date:** July 26, 2026  
 **Source:** [github.com/mtdvio/every-programmer-should-know](https://github.com/mtdvio/every-programmer-should-know)
 
@@ -12,18 +12,19 @@
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
-2. [Security](#2-security)
-3. [Distributed Systems](#3-distributed-systems)
-4. [Architecture](#4-architecture)
-5. [Memory Management](#5-memory-management)
-6. [Floating Point Arithmetic](#6-floating-point-arithmetic)
-7. [Unicode and Strings](#7-unicode-and-strings)
-8. [Latency and Performance](#8-latency-and-performance)
-9. [Time and Timezones](#9-time-and-timezones)
-10. [Code Quality Practices](#10-code-quality-practices)
-11. [Falsehoods Programmers Believe](#11-falsehoods-programmers-believe)
-12. [TrackBit Priority Action Items](#12-trackbit-priority-action-items)
-13. [References](#13-references)
+2. [Project Status](#2-project-status)
+3. [Security](#3-security)
+4. [Distributed Systems](#4-distributed-systems)
+5. [Architecture](#5-architecture)
+6. [Memory Management](#6-memory-management)
+7. [Floating Point Arithmetic](#7-floating-point-arithmetic)
+8. [Unicode and Strings](#8-unicode-and-strings)
+9. [Latency and Performance](#9-latency-and-performance)
+10. [Time and Timezones](#10-time-and-timezones)
+11. [Code Quality Practices](#11-code-quality-practices)
+12. [Falsehoods Programmers Believe](#12-falsehoods-programmers-believe)
+13. [TrackBit Priority Action Items](#13-trackbit-priority-action-items)
+14. [References](#14-references)
 
 ---
 
@@ -35,14 +36,80 @@ TrackBit is a Flutter-based, offline-first business management application with:
 - 21 SQLite (Drift) tables
 - 13 feature modules (POS, Inventory, CRM, Sales, Invoicing, Expenses, Employees, Roles, Reports, Sync, Settings, Auth, Dashboard)
 - Peer-to-peer data synchronization via WebSocket
-- Role-Based Access Control (RBAC) with 43 permissions
+- Role-Based Access Control (RBAC) with 47 permissions
 - Cross-platform targets: Android, iOS, Web
+- Landing page (HTML/CSS) deployed to GitHub Pages
+- GitHub Actions CI/CD pipeline
+- Codemagic configuration for mobile builds
 
 ---
 
-## 2. Security
+## 2. Project Status
 
-### 2.1 OWASP Top 10
+### 2.1 Release v1.0.0 (July 26, 2026)
+
+**Released on:** GitHub Releases (v1.0.0 tag)
+
+**Build Artifacts:**
+- `trackbit-v1.0.0.apk` - Android APK (~50MB)
+- `trackbit-v1.0.0-web.zip` - Web build (~5MB)
+
+**Workflows:**
+- `.github/workflows/ci.yml` - Lint, test, build (Android + Web)
+- `.github/workflows/release.yml` - Build + publish on tag push
+- `.github/FUNDING.yml` - GitHub Sponsors for donations
+
+### 2.2 Landing Page
+
+**URL:** https://anonbanana.github.io/trackbit/
+
+**Features:**
+- CyberShield-inspired dark theme
+- Interactive app preview with clickable sidebar
+- Hero section with Download APK / Use Web App buttons
+- Features section (6 cards)
+- Modules section (13 cards)
+- Download section with APK/Web/GitHub options
+- FAQ section (6 questions)
+- Footer with links
+- Total size: ~34KB (HTML + CSS + JS)
+
+### 2.3 CI/CD Pipeline
+
+**Status:** All workflows passing
+
+| Workflow | Duration | Status |
+|---|---|---|
+| CI (Lint + Test + Build) | ~7-8 min | ✅ Passing |
+| Release (APK + Web zip) | ~7-10 min | ✅ Passing |
+
+**Flutter Version:** 3.44.8 stable (pinned in CI)
+
+### 2.4 Test Coverage
+
+| Metric | Count |
+|---|---|
+| Unit tests | 84 |
+| Test files | 13 |
+| Features with tests | 13 of 13 |
+| Integration tests | Placeholder only |
+| Code coverage | Not tracked |
+
+### 2.5 Web Build Status
+
+**Status:** Compiling and running
+
+**Known Issues:**
+- `WebDatabase` from `drift/web.dart` is deprecated but functional
+- `WasmDatabase` requires hosting `sqlite3.wasm` + drift worker files
+- Image handling uses `XFile.readAsBytes()` + `Image.memory()` (works on web)
+- Peer discovery uses conditional import (web gets no-op stub)
+
+---
+
+## 3. Security
+
+### 3.1 OWASP Top 10
 
 **Source:** [owasp.org/www-project-top-ten](https://owasp.org/www-project-top-ten)
 
@@ -50,7 +117,7 @@ The OWASP Top 10 is the "gold standard" for web application vulnerabilities. Whi
 
 | OWASP Category | TrackBit Relevance | Current Status | Action Required |
 |---|---|---|---|
-| A01: Broken Access Control | RBAC with 43 permissions, role hierarchy | Implemented | Audit all permission checks at repository level |
+| A01: Broken Access Control | RBAC with 47 permissions, role hierarchy | Implemented | Audit all permission checks at repository level |
 | A02: Cryptographic Failures | Password hashing uses SHA-256 | **CRITICAL** | Upgrade to bcrypt/argon2 |
 | A03: Injection | SQL queries via Drift ORM | Partially mitigated | Verify no raw SQL injection vectors in sync_service |
 | A04: Insecure Design | Peer-to-peer sync architecture | Needs review | Add mutual authentication for sync peers |
@@ -456,9 +523,9 @@ Principles for TrackBit:
 **Source:** Kent Beck's "Test Driven Development: By Example"
 
 **Current TrackBit Test Coverage:**
-- 39 tests across 5 test files
-- 10 of 13 features have NO tests
-- No integration tests
+- 84 unit tests across 13 test files
+- All 13 features have tests
+- Integration test placeholder exists
 - No code coverage tracking
 
 **Target:** 200+ tests covering all features, with 80%+ coverage.
@@ -506,7 +573,20 @@ Falsehoods relevant to TrackBit:
 
 ---
 
-## 12. TrackBit Priority Action Items
+## 13. TrackBit Priority Action Items
+
+### Completed ✅
+
+| # | Action | Status | Date |
+|---|---|---|---|
+| 17 | GitHub Actions CI pipeline | ✅ Done | July 26, 2026 |
+| 18 | Codemagic iOS/Android builds | ✅ Done | July 26, 2026 |
+| 19 | v1.0.0 GitHub Release | ✅ Done | July 26, 2026 |
+| 20 | Landing page (GitHub Pages) | ✅ Done | July 26, 2026 |
+| 21 | 84 unit tests across 13 features | ✅ Done | July 26, 2026 |
+| 22 | Web build compilation | ✅ Done | July 26, 2026 |
+| 23 | Interactive app preview | ✅ Done | July 26, 2026 |
+| 24 | FUNDING.yml for donations | ✅ Done | July 26, 2026 |
 
 ### P0 - Critical (Do Immediately)
 
@@ -543,6 +623,17 @@ Falsehoods relevant to TrackBit:
 | 14 | Add event versioning for sync | Event Sourcing | `sync_service.dart` |
 | 15 | Validate input characters for SKUs | Homoglyphs | `product_form.dart` |
 | 16 | Add comprehensive audit logging | OWASP A09 | All repositories |
+
+### P4 - Future Enhancements
+
+| # | Action | Knowledge Source | Notes |
+|---|---|---|---|
+| 25 | Deploy Flutter web app to trackbit.app | Web deployment | Needs hosting |
+| 26 | Add screenshots to landing page | UX | Replace placeholders |
+| 27 | Migrate to WasmDatabase | Web performance | Replace deprecated WebDatabase |
+| 28 | Custom domain for landing page | Branding | Optional |
+| 29 | Add integration tests | TDD | Full app flows |
+| 30 | Implement real-time sync (WebSocket) | Distributed | Instead of LAN-only |
 
 ---
 
@@ -592,5 +683,6 @@ Falsehoods relevant to TrackBit:
 
 ---
 
-*Document generated on July 26, 2026 for the TrackBit project.*
+*Document generated on July 26, 2026 for the TrackBit project.*  
+*Last updated: July 26, 2026 - v1.0.0 release completed.*  
 *Source knowledge from "Every Programmer Should Know" by mtdvio (CC-BY-4.0 License).*
