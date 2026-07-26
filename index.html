@@ -85,13 +85,13 @@
                 </div>
                 <div class="preview-content">
                     <div class="preview-sidebar">
-                        <div class="sidebar-item active">Dashboard</div>
-                        <div class="sidebar-item">Inventory</div>
-                        <div class="sidebar-item">Sales</div>
-                        <div class="sidebar-item">CRM</div>
-                        <div class="sidebar-item">POS</div>
+                        <div class="sidebar-item active" data-section="dashboard">Dashboard</div>
+                        <div class="sidebar-item" data-section="inventory">Inventory</div>
+                        <div class="sidebar-item" data-section="sales">Sales</div>
+                        <div class="sidebar-item" data-section="crm">CRM</div>
+                        <div class="sidebar-item" data-section="pos">POS</div>
                     </div>
-                    <div class="preview-main">
+                    <div class="preview-main" id="preview-content">
                         <div class="preview-card">
                             <div class="card-label">Total Sales</div>
                             <div class="card-value">$24,500</div>
@@ -489,6 +489,107 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             navLinks.classList.remove('active');
             mobileMenuBtn.classList.remove('active');
         }
+    });
+});
+
+// App Preview Interactive Demo
+const previewContent = document.getElementById('preview-content');
+const sidebarItems = document.querySelectorAll('.sidebar-item');
+
+const sectionData = {
+    dashboard: `
+        <div class="preview-card">
+            <div class="card-label">Total Sales</div>
+            <div class="card-value">$24,500</div>
+            <div class="card-change positive">+12.5%</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Products</div>
+            <div class="card-value">1,234</div>
+            <div class="card-change positive">+8.2%</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Customers</div>
+            <div class="card-value">856</div>
+            <div class="card-change positive">+15.3%</div>
+        </div>
+    `,
+    inventory: `
+        <div class="preview-card">
+            <div class="card-label">Total Items</div>
+            <div class="card-value">1,234</div>
+            <div class="card-change positive">+45 this week</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Low Stock</div>
+            <div class="card-value">12</div>
+            <div class="card-change negative">needs restock</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Categories</div>
+            <div class="card-value">28</div>
+            <div class="card-change">all active</div>
+        </div>
+    `,
+    sales: `
+        <div class="preview-card">
+            <div class="card-label">Today's Sales</div>
+            <div class="card-value">$1,850</div>
+            <div class="card-change positive">+8.3%</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Orders</div>
+            <div class="card-value">47</div>
+            <div class="card-change positive">+12 today</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Avg. Order</div>
+            <div class="card-value">$39.36</div>
+            <div class="card-change">steady</div>
+        </div>
+    `,
+    crm: `
+        <div class="preview-card">
+            <div class="card-label">Customers</div>
+            <div class="card-value">856</div>
+            <div class="card-change positive">+24 new</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Loyalty Points</div>
+            <div class="card-value">12,450</div>
+            <div class="card-change">redeemable</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Top Customer</div>
+            <div class="card-value">$2,340</div>
+            <div class="card-change">lifetime value</div>
+        </div>
+    `,
+    pos: `
+        <div class="preview-card">
+            <div class="card-label">Cart Total</div>
+            <div class="card-value">$0.00</div>
+            <div class="card-change">empty cart</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Items Scanned</div>
+            <div class="card-value">0</div>
+            <div class="card-change">ready to scan</div>
+        </div>
+        <div class="preview-card">
+            <div class="card-label">Payment</div>
+            <div class="card-value">Cash/Card</div>
+            <div class="card-change">multiple methods</div>
+        </div>
+    `
+};
+
+sidebarItems.forEach(item => {
+    item.addEventListener('click', function() {
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        const section = this.dataset.section;
+        previewContent.innerHTML = sectionData[section];
     });
 });
 </script>
