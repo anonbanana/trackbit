@@ -1,0 +1,39 @@
+# Build artifacts
+build/
+.build/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Platform-specific
+android/
+ios/
+web/
+
+# Documentation
+documentation/
+images/
+*.md
+!README.md
+
+# Test
+test/
+integration_test/
+
+# CI/CD
+.github/
+codemagic.yaml
+codecov.yml
+.pre-commit-config.yaml
+
+# Misc
+analysis_options.yaml
+pubspec.lock
+trackbit.iml
+*.log
