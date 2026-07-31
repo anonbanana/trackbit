@@ -3,10 +3,10 @@ FROM ghcr.io/cirruslabs/flutter:stable AS builder
 
 WORKDIR /app
 
-# Copy pubspec files first for dependency caching
-COPY pubspec.yaml pubspec.lock ./
+# Copy pubspec file first for dependency caching
+COPY pubspec.yaml ./
 
-# Get dependencies
+# Get dependencies (generates pubspec.lock)
 RUN flutter pub get
 
 # Copy the rest of the source code
