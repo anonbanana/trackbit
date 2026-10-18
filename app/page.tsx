@@ -1,69 +1,114 @@
-export default function Home() {
-  return (
-    <div className="flex flex-1 flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-      <header className="border-b border-zinc-200 dark:border-zinc-800">
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4">
-          <span className="text-lg font-bold tracking-tight">TrackBit</span>
-          <nav className="flex gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-            <a href="#fitur" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-              Fitur
-            </a>
-            <a href="#mulai" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-              Mulai
-            </a>
-          </nav>
-        </div>
-      </header>
+import { Suspense } from "react";
+import Link from "next/link";
+import { produkPerluRestock, ringkasanStok } from "@/lib/stok";
+import { formatAngka, formatRupiah } from "@/lib/format";
+import { KELAS_KARTU, KELAS_TOMBOL_KECIL } from "@/lib/ui";
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-6 py-20">
-        <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-          Kelola bisnis kecil dari browser — di HP maupun komputer.
-        </h1>
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-          Penjualan, stok barang, invoice, dan laporan dalam satu aplikasi web
-          yang ringan. Tanpa install aplikasi, cukup buka di browser.
+export const metadata = { title: "Dashboard" };
+
+export default function Dashboard() {
+  return (
+    <>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            Angka stok terkini, dihitung dari seluruh pergerakan barang.
+          </p>
+        </div>
+        <Link href="/produk" className={KELAS_TOMBOL_KECIL}>
+          Kelola produk
+        </Link>
+      </div>
+
+      <Suspense fallback={<KerangkaDashboard />}>
+        <IsiDashboard />
+      </Suspense>
+    </>
+  );
+}
+
+function KerangkaDashboard() {
+  return (
+    <div className="mt-8 space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className={`${KELAS_KARTU} animate-pulse`}>
+            <div className="h-3 w-24 rounded bg-zinc-200 dark:bg-zinc-800" />
+            <div className="mt-3 h-7 w-32 rounded bg-zinc-200 dark:bg-zinc-800" />
+          </div>
+        ))}
+      </div>
+      <div className={`${KELAS_KARTU} animate-pulse`}>
+        <div className="h-3 w-40 rounded bg-zinc-200 dark:bg-zinc-800" />
+        <div className="mt-4 h-16 rounded bg-zinc-100 dark:bg-zinc-800/60" />
+      </div>
+    </div>
+  );
+}
+
+async function IsiDashboard() {
+  const [ringkasan, perluRestock] = await Promise.all([
+    ringkasanStok(),
+    produkPerluRestock(),
+  ]);
+
+  const kartu = [
+    { label: "Jumlah produk", nilai: formatAngka(ringkasan.jumlah_produk) },
+    { label: "Nilai stok", nilai: formatRupiah(ringkasan.nilai_stok) },
+    { label: "Perlu restock", nilai: formatAngka(ringkasan.produk_menipis) },
+    { label: "Pergerakan hari ini", nilai: formatAngka(ringkasan.pergerakan_hari_ini) },
+  ];
+
+  return (
+    <div className="mt-8 space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {kartu.map((k) => (
+          <div key={k.label} className={KELAS_KARTU}>
+            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              {k.label}
+            </p>
+            <p className="mt-2 text-2xl font-bold tracking-tight">{k.nilai}</p>
+          </div>
+        ))}
+      </div>
+
+      <section className={KELAS_KARTU}>
+        <h2 className="font-semibold">Perlu restock</h2>
+        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          Produk yang stoknya sudah menyentuh batas minimum.
         </p>
 
-        <section id="fitur" className="mt-16 grid gap-6 sm:grid-cols-3">
-          {[
-            {
-              title: "Penjualan & POS",
-              desc: "Catat transaksi kasir dan penjualan online dengan cepat.",
-            },
-            {
-              title: "Stok & Produk",
-              desc: "Pantau stok, kategori, dan pergerakan barang secara real time.",
-            },
-            {
-              title: "Invoice & Laporan",
-              desc: "Buat tagihan pelanggan dan lihat ringkasan keuangan bisnis.",
-            },
-          ].map((f) => (
-            <div
-              key={f.title}
-              className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-            >
-              <h2 className="font-semibold">{f.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                {f.desc}
-              </p>
-            </div>
-          ))}
-        </section>
-
-        <section id="mulai" className="mt-16">
-          <button
-            type="button"
-            className="inline-flex h-11 items-center justify-center rounded-lg bg-indigo-600 px-6 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
-          >
-            Coba sekarang
-          </button>
-        </section>
-      </main>
-
-      <footer className="border-t border-zinc-200 py-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
-        TrackBit — aplikasi web manajemen bisnis.
-      </footer>
+        {perluRestock.length === 0 ? (
+          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
+            Semua produk masih di atas batas minimum.
+          </p>
+        ) : (
+          <ul className="mt-4 divide-y divide-zinc-200 dark:divide-zinc-800">
+            {perluRestock.map((p) => (
+              <li key={p.id} className="flex items-center justify-between gap-4 py-3">
+                <div className="min-w-0">
+                  <Link
+                    href={`/produk/${p.id}`}
+                    className="font-medium hover:text-indigo-600 dark:hover:text-indigo-400"
+                  >
+                    {p.nama}
+                  </Link>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">{p.sku}</p>
+                </div>
+                <div className="text-right text-sm">
+                  <p className="font-semibold text-amber-600 dark:text-amber-500">
+                    {formatAngka(p.stok)} {p.satuan}
+                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    min {formatAngka(p.stok_minimum)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }

@@ -17,6 +17,12 @@
 /.next/
 /out/
 
+# database lokal (jangan pernah masuk git — isinya data bisnis)
+/data/
+*.db
+*.db-wal
+*.db-shm
+
 # production
 /build
 
