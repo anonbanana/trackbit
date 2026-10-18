@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TrackBit
 
-## Getting Started
+Aplikasi web manajemen bisnis kecil. Fokus pertama: **stok yang cepat, ringan, dan akurat**.
+Dibuka di browser — HP maupun komputer — tanpa install aplikasi.
 
-First, run the development server:
+Versi Flutter lama (v1.0.0) tidak hilang; masih bisa diambil dari tag `v1.0.0`.
+
+## Menjalankan
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> **Penting:** `better-sqlite3` adalah modul native dan butuh compiler C++.
+> Di mesin ini `g++` tidak terpasang, jadi arahkan ke `clang++`:
+>
+> ```bash
+> CXX=c++ CC=cc npm install
+> ```
+>
+> Kalau tidak, pemasangan gagal dengan pesan `make: g++: No such file or directory`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cara data disimpan
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Satu file SQLite: `data/trackbit.db` (diabaikan git — isinya data bisnis).
+- **Uang selalu bilangan bulat rupiah.** Tidak pernah pecahan, supaya angka tidak
+  melenceng diam-diam. (Bug ini ada di app Flutter lama.)
+- **Stok dihitung dari buku pergerakan** (`pergerakan_stok`), bukan angka yang ditimpa.
+  Stok sebuah produk = jumlah semua `masuk` dikurangi semua `keluar`.
+- Barang keluar yang melebihi stok ditolak **di dalam satu transaksi**, jadi
+  stok tidak mungkin minus walau dua tab menekan tombol bersamaan.
 
-## Learn More
+## Yang sudah jalan
 
-To learn more about Next.js, take a look at the following resources:
+| Bagian | Isi |
+|---|---|
+| Dashboard | jumlah produk, nilai stok, perlu restock, pergerakan hari ini |
+| Produk | daftar, tambah, ubah, hapus, kategori (bisa dibuat langsung dari form) |
+| Detail produk | catat barang masuk / keluar + riwayat lengkap |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Belum ada
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Login/akun, kasir (POS), invoice, laporan keuangan, barcode, banyak gudang.
 
-## Deploy on Vercel
+## Catatan
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `documentation/` masih menceritakan app Flutter lama — perlu diperbarui.
+- Halaman jualan lama ada di cabang `gh-pages` repo ini dan masih menawarkan
+  "Download APK"; perlu diganti setelah app web ini matang.
+- Kerangka halaman sengaja statis (Partial Prerender): tampilan muncul dulu,
+  angka stok menyusul. Karena itu semua pembacaan database lewat `connection()`.
