@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TrackBit - Offline-first business management application. Manage inventory, sales, CRM, POS, employees, and more. Free and open source.">
-    <title>TrackBit - Offline-First Business Management</title>
+    <meta name="description" content="TrackBit is a web app for small-business inventory. Fast, light, and accurate: every stock change is recorded, and stock can never go negative.">
+    <title>TrackBit - Inventory &amp; Stock for Small Business</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -21,10 +21,10 @@
         <ul class="nav-links">
             <li><a href="#features">Features</a></li>
             <li><a href="#modules">Modules</a></li>
-            <li><a href="#download">Download</a></li>
+            <li><a href="#download">Get Started</a></li>
             <li><a href="#faq">FAQ</a></li>
         </ul>
-        <a href="#download" class="btn btn-primary btn-sm">Get Started</a>
+        <a href="https://github.com/anonbanana/trackbit" class="btn btn-primary btn-sm" target="_blank">Source Code</a>
         <button class="mobile-menu-btn" aria-label="Toggle menu">
             <span></span>
             <span></span>
@@ -40,8 +40,9 @@
             <div class="hero-badge">Free & Open Source</div>
             <h1>Business Management<br><span class="gradient-text">Made Simple</span></h1>
             <p class="hero-description">
-                Offline-first application for managing inventory, POS, sales, customers, employees, invoicing, and more. 
-                Use in browser or install on Android.
+                A web app for small-business inventory. Fast, light, and accurate:
+                every stock change is recorded as a permanent row, so the number on
+                screen is always the sum of what actually happened.
             </p>
             <div class="hero-buttons">
                 <a href="#download" class="btn btn-primary btn-lg">
@@ -50,23 +51,23 @@
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
-                    Download APK
+                    How to run it
                 </a>
-                <a href="https://github.com/anonbanana/trackbit/blob/main/documentation/self-hosting-guide.md" class="btn btn-outline btn-lg" target="_blank">
+                <a href="https://github.com/anonbanana/trackbit" class="btn btn-outline btn-lg" target="_blank">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                     </svg>
-                    Self-Host with Docker
+                    View Source Code
                 </a>
             </div>
             <div class="hero-stats">
                 <div class="stat">
-                    <span class="stat-number">13+</span>
-                    <span class="stat-label">Modules</span>
+                    <span class="stat-number">1</span>
+                    <span class="stat-label">Module live</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number">47</span>
-                    <span class="stat-label">Permissions</span>
+                    <span class="stat-number">13</span>
+                    <span class="stat-label">Planned</span>
                 </div>
                 <div class="stat">
                     <span class="stat-number">100%</span>
@@ -118,7 +119,7 @@
     <div class="container">
         <div class="section-header">
             <h2>Why Choose <span class="gradient-text">TrackBit</span></h2>
-            <p>Everything you need to manage your business, offline or online</p>
+            <p>Built to be fast, light, and honest about your numbers</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
@@ -127,8 +128,8 @@
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                     </svg>
                 </div>
-                <h3>Offline-First</h3>
-                <p>Works without internet. All data stored locally using SQLite. Sync when ready.</p>
+                <h3>Accurate by Design</h3>
+                <p>Stock is the sum of every recorded movement. Nothing is silently overwritten.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
@@ -138,8 +139,8 @@
                         <line x1="12" y1="17" x2="12" y2="21"></line>
                     </svg>
                 </div>
-                <h3>Multi-Platform</h3>
-                <p>Use in any browser, install on Android. Same app, same data, everywhere.</p>
+                <h3>Runs in a Browser</h3>
+                <p>Phone, tablet, or desktop. Nothing to install, no app store needed.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
@@ -147,8 +148,8 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
                 </div>
-                <h3>Secure</h3>
-                <p>Role-based access control with 47 permissions. Your data stays on your device.</p>
+                <h3>Your Data, Your File</h3>
+                <p>One SQLite file on your own machine. No third-party service in the middle.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
@@ -157,7 +158,7 @@
                     </svg>
                 </div>
                 <h3>Fast</h3>
-                <p>Built with Flutter for native performance. Instant loading, smooth animations.</p>
+                <p>The page shell renders instantly and live numbers stream in. Next.js + SQLite.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
@@ -168,7 +169,7 @@
                     </svg>
                 </div>
                 <h3>Free & Open Source</h3>
-                <p>MIT licensed. No hidden fees, no subscriptions. Use it forever.</p>
+                <p>No hidden fees, no subscriptions. The code is on GitHub.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
@@ -179,8 +180,8 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                 </div>
-                <h3>P2P Sync</h3>
-                <p>Sync data between devices on the same network. No cloud required.</p>
+                <h3>One Source of Truth</h3>
+                <p>Every device reads the same database, so two people never see different numbers.</p>
             </div>
         </div>
     </div>
@@ -190,8 +191,8 @@
 <section class="modules" id="modules">
     <div class="container">
         <div class="section-header">
-            <h2>13 Complete <span class="gradient-text">Modules</span></h2>
-            <p>Everything you need to run your business in one application</p>
+            <h2>Room to <span class="gradient-text">Grow</span></h2>
+            <p>Inventory is live today. The rest is the roadmap — not a promise.</p>
         </div>
         <div class="modules-grid">
             <div class="module-card">
@@ -237,12 +238,12 @@
             <div class="module-card">
                 <div class="module-icon">🔐</div>
                 <h4>Roles</h4>
-                <p>9 roles, hierarchical</p>
+                <p>Who can do what (planned)</p>
             </div>
             <div class="module-card">
                 <div class="module-icon">🔄</div>
-                <h4>Sync</h4>
-                <p>LAN peer-to-peer sync</p>
+                <h4>Stock Ledger</h4>
+                <p>Every movement recorded</p>
             </div>
             <div class="module-card">
                 <div class="module-icon">📈</div>
@@ -267,8 +268,8 @@
 <section class="download" id="download">
     <div class="container">
         <div class="section-header">
-            <h2>Get <span class="gradient-text">TrackBit</span></h2>
-            <p>Start managing your business today</p>
+            <h2>Run <span class="gradient-text">TrackBit</span></h2>
+            <p>No hosted version yet. Two commands and it runs on your own machine.</p>
         </div>
         <div class="download-grid">
             <div class="download-card">
@@ -277,9 +278,9 @@
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                     </svg>
                 </div>
-                <h3>Self-Host (Docker)</h3>
-                <p>Run on your own server with Docker. Your data stays with you.</p>
-                <a href="https://github.com/anonbanana/trackbit/blob/main/documentation/self-hosting-guide.md" class="btn btn-primary" target="_blank">Setup Guide</a>
+                <h3>Run Locally</h3>
+                <p>Node.js 20+ and a C++ compiler for the SQLite driver.</p>
+                <a href="https://github.com/anonbanana/trackbit#menjalankan" class="btn btn-primary" target="_blank">Read the README</a>
             </div>
             <div class="download-card featured">
                 <div class="download-badge">Recommended</div>
@@ -289,9 +290,9 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                 </div>
-                <h3>Android APK</h3>
-                <p>Install on your Android device for the best experience.</p>
-                <a href="https://github.com/anonbanana/trackbit/releases/latest" class="btn btn-primary" target="_blank">Download APK</a>
+                <h3>Any Device</h3>
+                <p>The same app in any browser. No APK, no app store.</p>
+                <a href="https://github.com/anonbanana/trackbit" class="btn btn-primary" target="_blank">View on GitHub</a>
             </div>
             <div class="download-card">
                 <div class="download-icon">
@@ -300,7 +301,7 @@
                     </svg>
                 </div>
                 <h3>Source Code</h3>
-                <p>Build from source. Requires Flutter SDK.</p>
+                <p>Read it, change it, run it. Contributions welcome.</p>
                 <a href="https://github.com/anonbanana/trackbit" class="btn btn-outline" target="_blank">View on GitHub</a>
             </div>
         </div>
@@ -321,16 +322,16 @@
                     <span class="faq-icon">+</span>
                 </button>
                 <div class="faq-answer">
-                    <p>Yes! TrackBit is 100% free and open source under the MIT license. No hidden fees, no subscriptions. You can use it forever.</p>
+                    <p>Yes! TrackBit is free and open source. No hidden fees, no subscriptions. You can use it forever.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-question">
-                    Does it work offline?
+                    Where is my data stored?
                     <span class="faq-icon">+</span>
                 </button>
                 <div class="faq-answer">
-                    <p>Absolutely! TrackBit is built as an offline-first application. All data is stored locally on your device using SQLite. You can sync between devices when you have internet.</p>
+                    <p>In one SQLite file on the machine that runs TrackBit. On a local network it keeps working without an internet connection.</p>
                 </div>
             </div>
             <div class="faq-item">
@@ -339,16 +340,16 @@
                     <span class="faq-icon">+</span>
                 </button>
                 <div class="faq-answer">
-                    <p>Yes! TrackBit supports peer-to-peer synchronization between devices on the same local network. You can connect multiple devices and sync your data without any cloud service.</p>
+                    <p>Yes. There is no syncing to set up: all devices read the same database, so two people always see the same stock number at the same time.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-question">
-                    How do I install on Android?
+                    How do I run it?
                     <span class="faq-icon">+</span>
                 </button>
                 <div class="faq-answer">
-                    <p>Download the APK from GitHub Releases, enable "Install from unknown sources" in your Android settings, and open the APK file to install.</p>
+                    <p>Install Node.js 20 or newer, then run <code>npm install</code> and <code>npm run dev</code>. The README lists the one gotcha: the SQLite driver needs a C++ compiler.</p>
                 </div>
             </div>
             <div class="faq-item">
@@ -357,7 +358,7 @@
                     <span class="faq-icon">+</span>
                 </button>
                 <div class="faq-answer">
-                    <p>TrackBit uses role-based access control with 47 different permissions. Your data stays on your device - we never collect or transmit any of your business data.</p>
+                    <p>Your data stays in a file you control; nothing is sent to a third party. Be aware that login and roles are not built yet — do not expose it to the open internet until they are.</p>
                 </div>
             </div>
             <div class="faq-item">
@@ -376,10 +377,10 @@
 <!-- CTA Section -->
 <section class="cta">
     <div class="container">
-        <h2>Ready to Manage Your Business?</h2>
-        <p>Start using TrackBit today. Free, open source, and offline-first.</p>
+        <h2>Ready to Try It?</h2>
+        <p>Free, open source, and built to be trusted with your numbers.</p>
         <div class="cta-buttons">
-            <a href="#download" class="btn btn-primary btn-lg">Get Started Free</a>
+            <a href="#download" class="btn btn-primary btn-lg">How to run it</a>
             <a href="https://github.com/anonbanana/trackbit" class="btn btn-outline btn-lg" target="_blank">View Source Code</a>
         </div>
     </div>
@@ -394,7 +395,7 @@
                     <span class="logo-icon">TB</span>
                     <span class="logo-text">TrackBit</span>
                 </a>
-                <p>Offline-first business management application. Free and open source.</p>
+                <p>Inventory and stock for small business. Free and open source.</p>
             </div>
             <div class="footer-links">
                 <div class="footer-column">
@@ -402,7 +403,7 @@
                     <ul>
                         <li><a href="#features">Features</a></li>
                         <li><a href="#modules">Modules</a></li>
-                        <li><a href="#download">Download</a></li>
+                        <li><a href="#download">Get Started</a></li>
                         <li><a href="#faq">FAQ</a></li>
                     </ul>
                 </div>
@@ -418,13 +419,12 @@
                     <h4>Support</h4>
                     <ul>
                         <li><a href="https://github.com/sponsors/anonbanana" target="_blank">Donate</a></li>
-                        <li><a href="https://github.com/anonbanana/trackbit/blob/main/LICENSE" target="_blank">License</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 TrackBit. Free and open source under MIT License.</p>
+            <p>&copy; 2026 TrackBit. Free and open source.</p>
             <div class="footer-social">
                 <a href="https://github.com/anonbanana/trackbit" target="_blank" aria-label="GitHub">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
