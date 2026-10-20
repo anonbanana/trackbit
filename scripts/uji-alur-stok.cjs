@@ -7,18 +7,42 @@
  * Ingin melihat jendela Chrome-nya bergerak? Tambahkan TERLIHAT=1:
  *   TERLIHAT=1 NODE_PATH=<folder playwright> node scripts/uji-alur-stok.cjs
  *
+ * Hasil ditulis otomatis ke workspace QA (bukan ke my-app):
+ *   /home/x/qa-expert-istqb/testing/test-result/<tanggal_jam>/
+ *   berisi test-results.json, defects.json (kalau ada yang gagal), dan screenshot.
+ * Mau ke folder lain? Set HASIL_DIR=/path/ke/folder.
+ *
  * Catatan: skrip ini menganggap database masih kosong (belum ada produk).
  * Untuk mengulang dari awal: hentikan server, hapus folder data/, nyalakan lagi.
  */
 const { chromium } = require("playwright");
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 
 const BASE = "http://localhost:3000";
 const TERLIHAT = process.env.TERLIHAT === "1";
 const GALAT_KONSOL = [];
+
+// Hasil uji milik workspace QA. my-app adalah wilayah role Developer,
+// jadi jangan menaruh laporan/screenshot di sana.
+const DIR_HASIL = process.env.HASIL_DIR
+  ? path.resolve(process.env.HASIL_DIR)
+  : path.resolve(__dirname, "../../../../qa-expert-istqb/testing/test-result");
+
+const dua = (n) => String(n).padStart(2, "0");
+const sekarang = new Date();
+const STEMPEL = `${sekarang.getFullYear()}-${dua(sekarang.getMonth() + 1)}-${dua(sekarang.getDate())}_${dua(sekarang.getHours())}${dua(sekarang.getMinutes())}`;
+const DIR_RUN = path.join(DIR_HASIL, STEMPEL);
+const MULAI = sekarang.toISOString();
+fs.mkdirSync(DIR_RUN, { recursive: true });
+
 let lulus = 0;
 let gagal = 0;
+const HASIL = [];
 
 function cek(nama, benar, detail = "") {
+  HASIL.push({ nama, lulus: Boolean(benar), detail: benar ? "" : String(detail) });
   if (benar) {
     lulus++;
     console.log(`  ✓ ${nama}`);
@@ -185,7 +209,7 @@ function stokDari(teks) {
   cek("perlu restock = 1", /perlu restock\s*\n\s*1/i.test(isi), isi);
   cek("pergerakan hari ini = 3", /pergerakan hari ini\s*\n\s*3/i.test(isi), isi);
   cek("produk muncul di daftar perlu restock", /Kopi Uji/.test(isi));
-  await page.screenshot({ path: "/tmp/opencode/trackbit-dashboard.png", fullPage: true });
+  await page.screenshot({ path: path.join(DIR_RUN, "01_dashboard.png"), fullPage: true });
 
   console.log("\n11. Ubah harga → nilai stok ikut berubah");
   await page.goto(`${BASE}/produk/${idProduk}`, { waitUntil: "domcontentloaded" });
@@ -198,7 +222,7 @@ function stokDari(teks) {
   cek('pesan \'Perubahan "Kopi Uji" tersimpan.\'', /Perubahan "Kopi Uji" tersimpan/.test(isi), isi);
   isi = await tungguTeks(page, /Rp 150\.000/);
   cek("nilai stok jadi Rp 150.000 (5 × 30.000)", /Rp 150\.000/.test(isi), isi);
-  await page.screenshot({ path: "/tmp/opencode/trackbit-detail.png", fullPage: true });
+  await page.screenshot({ path: path.join(DIR_RUN, "02_detail.png"), fullPage: true });
 
   console.log("\n12. Hapus produk (dengan konfirmasi)");
   page.on("dialog", (d) => d.accept());
@@ -230,6 +254,47 @@ function stokDari(teks) {
   console.log("\n=== GALAT KONSOL BROWSER ===");
   if (GALAT_KONSOL.length === 0) console.log("  (bersih, tidak ada error)");
   else GALAT_KONSOL.forEach((g) => console.log("  !", g.slice(0, 200)));
+
+  // --- Simpan hasil mesin ke workspace QA ---
+  let commit = "tidak diketahui";
+  try {
+    commit = execSync("git rev-parse --short HEAD", { cwd: __dirname }).toString().trim();
+  } catch {
+    // bukan repo git / git tidak ada — tidak fatal
+  }
+
+  const ringkasan = {
+    aplikasi: "trackbit",
+    alamat: BASE,
+    commit,
+    mulai: MULAI,
+    selesai: new Date().toISOString(),
+    lulus,
+    gagal,
+    total: lulus + gagal,
+    galatKonsol: GALAT_KONSOL,
+    pemeriksaan: HASIL,
+  };
+  fs.writeFileSync(
+    path.join(DIR_RUN, "test-results.json"),
+    JSON.stringify(ringkasan, null, 2),
+  );
+
+  if (gagal > 0) {
+    const cacat = HASIL.filter((h) => !h.lulus).map((h, i) => ({
+      id: `DEF-${String(i + 1).padStart(3, "0")}`,
+      nama: h.nama,
+      nyata: h.detail || "(tidak ada detail)",
+      tingkat: "belum dinilai",
+      catatan: "Lengkapi langkah reproduksi dan tingkat keparahan sebelum menyerahkan laporan.",
+    }));
+    fs.writeFileSync(
+      path.join(DIR_RUN, "defects.json"),
+      JSON.stringify(cacat, null, 2),
+    );
+  }
+
+  console.log(`\nHasil mesin disimpan di: ${DIR_RUN}`);
 
   console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal ===`);
   process.exit(gagal === 0 ? 0 : 1);
